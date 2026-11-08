@@ -1,0 +1,1822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Earthy Wisdom</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2304091a'/%3E%3Cg transform='translate(14 14) scale(.72)'%3E%3Cpath d='M12.0 17.7 L15.2 16.3 L21.8 20.1 L27.8 20.5 L31.3 22.4 L31.7 26.1 L36.4 27.9 L41.5 30.3 L51.0 29.3 L51.4 27.5 L56.9 24.2 L64.4 23.3 L72.2 26.6 L76.6 30.7 L79.7 30.7 L79.3 35.4 L77.0 41.9 L78.5 45.1 L77.4 54.4 L81.7 54.9 L82.1 57.7 L78.5 62.3 L80.5 64.6 L84.8 69.3 L86.0 73.9 L88.0 76.2 L82.1 79.0 L81.3 83.7 L73.4 82.7 L64.4 80.4 L62.4 74.8 L59.6 74.4 L54.5 77.6 L49.4 75.8 L45.5 72.5 L41.1 71.1 L38.8 66.5 L36.0 60.4 L31.7 59.1 L30.1 61.8 L27.8 59.1 L27.8 56.7 L26.6 56.7 L26.6 52.1 L20.3 47.4 L17.5 43.3 L18.3 40.5 L15.9 38.2 L20.3 34.9 L17.5 33.5 L15.2 27.9 L12.8 24.7 L13.6 22.8Z' fill='%2329e078' stroke='%2329e078' stroke-width='15' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Earthy Wisdom">
+<meta name="theme-color" content="#04091a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Catamaran:wght@400;500;600;700;800&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body{margin:0;font:14px/1.4 system-ui,-apple-system,sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<style>
+/* Layout: one-screen atlas app. Map fills the screen; the answer panel docks below on phones and to the right on wide screens. */
+:root{
+  --bg:#eaefee; --surface:#ffffff; --ocean:#d3e0e4; --land:#fbfbf7; --border:#8fa0a6;
+  --grat:rgba(40,70,80,.10); --ink:#16242a; --muted:#5a6a70; --line:#cdd8db;
+  --accent:#d6461a; --accent-ink:#ffffff; --good:#25744a; --bad:#b3261e; --goodbg:#e2f1e8; --badbg:#fbe7e5;
+  --f-display:"Catamaran", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:"Catamaran", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"Catamaran", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1316; --surface:#142026; --ocean:#10212a; --land:#2a3a41; --border:#5d7580;
+  --grat:rgba(170,210,220,.08); --ink:#e5eef0; --muted:#93a6ad; --line:#24363d;
+  --accent:#ff7a45; --accent-ink:#1a0d06; --good:#5cc98a; --bad:#ff8a80; --goodbg:#16302a; --badbg:#3a1d1c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1316; --surface:#142026; --ocean:#10212a; --land:#2a3a41; --border:#5d7580;
+  --grat:rgba(170,210,220,.08); --ink:#e5eef0; --muted:#93a6ad; --line:#24363d;
+  --accent:#ff7a45; --accent-ink:#1a0d06; --good:#5cc98a; --bad:#ff8a80; --goodbg:#16302a; --badbg:#3a1d1c; color-scheme:dark}
+
+html,body{height:100%}
+.mapbar{position:absolute;left:max(10px,env(safe-area-inset-left,0px));top:calc(10px + var(--hidTop,0px));display:flex;gap:6px;z-index:4}
+.btn.chip{min-height:38px;padding:6px 12px;font-size:.9rem;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.btn.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:transparent}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu{position:fixed;inset:0;z-index:15;background:var(--bg);overflow:auto;padding-top:env(safe-area-inset-top,0px)}
+.menu-in{max-width:520px;margin:0 auto;padding-block:28px 40px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+.brand.big{font-size:2.6rem;gap:14px}.brand.big i{width:20px;height:20px;border-radius:5px}
+.tag{margin:6px 0 0;color:var(--muted);max-width:40ch;line-height:1.45}
+.btn.big{min-height:54px;font-size:1.1rem;border-radius:12px}
+.group{display:flex;flex-direction:column;gap:8px}
+.lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.menu select{font-size:1rem;min-height:46px;padding:8px 10px;border-radius:10px;background:var(--surface)}
+.menu label.chk{font-size:.92rem;color:var(--ink)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg label{display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:9px;cursor:pointer;font-weight:700}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--ink);color:var(--bg)}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:1px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;justify-items:center}
+.ring{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:130px}
+.ring .dial{position:relative;width:100%;aspect-ratio:1;max-width:100%}
+.ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{fill:none;stroke:var(--border);stroke-width:1;opacity:.6}
+.ring .arc{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+.ring.r1 .arc{stroke:var(--accent)} .ring.r2 .arc{stroke:var(--good)} .ring.r3 .arc{stroke:var(--ink)}
+.ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-mono);font-weight:600;font-size:1.15rem;font-variant-numeric:tabular-nums;line-height:1.1}
+.ring .val small{font-size:.68rem;font-weight:400;color:var(--muted)}
+.ring .cap{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;text-align:center}
+@media (prefers-reduced-motion:reduce){.ring .arc{transition:none}}
+.note{margin:0;font-family:var(--f-mono);font-size:.78rem;color:var(--bad);line-height:1.5;overflow-wrap:anywhere}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;overflow:hidden}
+.app{height:100%;display:grid;grid-template-rows:1fr auto;max-width:1280px;margin:0 auto}
+/* Pinned to the visible area, so the on-screen keyboard shrinks the map instead of pushing the top off screen */
+.app.vv{position:fixed;left:0;right:0;top:var(--vvtop,0px);height:var(--vvh,100%);padding-top:var(--vvpad,0px);box-sizing:border-box}
+@media (min-width:900px){.app{grid-template-columns:1fr 360px;grid-template-rows:1fr}
+  .panel{border-top:0!important;border-left:1px solid var(--line);overflow:auto;justify-content:center}}
+
+.top{display:flex;align-items:center;gap:12px;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.35rem;letter-spacing:-.02em;margin-right:auto;display:flex;align-items:center;gap:8px}
+.brand i{width:12px;height:12px;border-radius:3px;background:var(--accent);display:inline-block;transform:rotate(45deg)}
+.tally{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);display:flex;gap:12px;font-variant-numeric:tabular-nums}
+.tally b{color:var(--ink);font-weight:600}
+.btn{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer;min-height:42px}
+.btn:hover{border-color:var(--border)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.ghost{background:transparent}
+.btn.sm{min-height:36px;padding:6px 11px;font-size:.88rem}
+
+.map{position:relative;min-height:0;background:var(--space);overflow:hidden;touch-action:none}
+@media (min-width:900px){.map{margin:16px 0 16px 16px;border-radius:14px;border:1px solid var(--line)}}
+canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab}
+canvas.drag{cursor:grabbing}
+.zoom{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:12px;display:flex;flex-direction:column;gap:6px}
+.zoom .btn{width:42px;padding:0;font-size:1.2rem;background:var(--surface)}
+.coord{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;white-space:nowrap;font-family:var(--f-mono);font-size:.72rem;color:var(--muted);background:color-mix(in srgb,var(--surface) 80%,transparent);padding:4px 8px;border-radius:6px;font-variant-numeric:tabular-nums}
+.loading{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--muted);font-family:var(--f-mono);font-size:.85rem}
+
+.panel{border-top:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:12px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.q{font-family:var(--f-display);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.row{display:flex;gap:8px;align-items:stretch}
+.field{position:relative;flex:1;min-width:0}
+input[type=text]{width:100%;box-sizing:border-box;font:inherit;font-size:1.05rem;padding:10px 12px;min-height:46px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.field{position:relative}
+.sugg{position:absolute;left:0;right:0;bottom:calc(100% + 6px);background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);list-style:none;margin:0;padding:4px;z-index:5}
+@media (min-width:900px){.sugg{bottom:auto;top:calc(100% + 6px)}}
+.sugg li{padding:9px 10px;border-radius:7px;cursor:pointer}
+.sugg li[aria-selected=true],.sugg li:hover{background:var(--bg)}
+.result{border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.result.good{background:var(--goodbg)} .result.bad{background:var(--badbg)}
+.result strong{font-family:var(--f-display);font-size:1.25rem;letter-spacing:-.01em}
+.result.good strong{color:var(--good)} .result.bad strong{color:var(--bad)}
+.result span{color:var(--muted);font-size:.92rem}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.settings{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.88rem;color:var(--muted)}
+select{font:inherit;font-size:.88rem;padding:6px 8px;min-height:36px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+label.chk{display:flex;align-items:center;gap:6px;cursor:pointer}
+.save{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+
+/* Progress sheet */
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:20;overflow:auto;padding-top:env(safe-area-inset-top,0px)}
+.sheet-in{max-width:760px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+.sheet h2{font-family:var(--f-display);font-weight:800;font-size:1.6rem;margin:0;letter-spacing:-.02em}
+.sheet h3{font-family:var(--f-display);font-weight:700;font-size:1.05rem;margin:0 0 8px}
+.sheet-head{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:480px){.sum{grid-template-columns:repeat(2,1fr)}}
+.sum div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.sum b{display:block;font-family:var(--f-mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.sum span{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.list li{display:grid;grid-template-columns:1fr auto 70px;gap:10px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--line)}
+.list .nm{min-width:0;overflow-wrap:anywhere}
+.list .ct{font-family:var(--f-mono);font-size:.8rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.list .ct .g{color:var(--good)} .list .ct .h{color:var(--muted)} .list .ct .r{color:var(--bad)}
+.bar{height:6px;border-radius:3px;background:var(--badbg);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--good)}
+.empty{color:var(--muted);font-size:.92rem;margin:0}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+@media (prefers-reduced-motion:no-preference){.result{animation:pop .22s ease-out}@keyframes pop{from{transform:translateY(4px);opacity:.4}}}
+</style>
+
+<style>
+/* Capsule controls */
+.btn{border-radius:999px;padding:12px 24px;min-height:48px}
+.btn.sm{padding:9px 20px;min-height:42px}
+.btn.chip{border-radius:999px;padding:8px 18px;min-height:42px}
+.btn.big{border-radius:999px;min-height:58px;padding:14px 28px}
+.zoom .btn{width:46px;height:46px;min-height:46px;padding:0;border-radius:50%}
+input[type=text]{border-radius:999px;padding:12px 22px;min-height:52px}
+select,.menu select{-webkit-appearance:none;appearance:none;border-radius:999px;padding:12px 48px 12px 22px;min-height:52px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238a989d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 20px center}
+.seg{border-radius:999px;padding:5px}
+.seg label{border-radius:999px;min-height:44px}
+.sugg{border-radius:22px;padding:6px}
+.sugg li{border-radius:999px;padding:10px 16px}
+.result{border-radius:22px;padding:14px 20px}
+.coord{border-radius:999px;padding:5px 12px}
+.ring .val{font-weight:700;font-size:1.3rem}
+.brand{font-weight:800}
+
+/* Palette v2: cyan-leaning neutrals, blue-leaning green accent, yellow secondary */
+:root{
+  --space:#04091a; --landfill:#f4f2ec; --mapline:#04091a; --mapink:#14212b; --spaceink:#c9d4dc;
+  --bg:#eaf0f1; --surface:#ffffff; --ocean:#cfe5e8; --water:#7cc0e5; --land:#fbfcfb; --border:#8da2a5;
+  --grat:rgba(46,100,107,.12); --ink:#152428; --muted:#57676b; --line:#ccdadb;
+  --accent:#1bbb60; --accent-ink:#04160c; --accent2:#ffff00; --edge2:#a3a300;
+  --good:#1b7e4d; --goodbg:#daf1e4;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#091315; --surface:#111f22; --ocean:#11292c; --water:#0a4566; --land:#324548; --border:#5c848a;
+  --grat:rgba(150,225,232,.08); --ink:#e6eff0; --muted:#93abae; --line:#223639;
+  --accent:#29e078; --accent-ink:#04160c; --accent2:#ffff00; --edge2:transparent;
+  --good:#5cd691; --goodbg:#193426; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#091315; --surface:#111f22; --ocean:#11292c; --water:#0a4566; --land:#324548; --border:#5c848a;
+  --grat:rgba(150,225,232,.08); --ink:#e6eff0; --muted:#93abae; --line:#223639;
+  --accent:#29e078; --accent-ink:#04160c; --accent2:#ffff00; --edge2:transparent;
+  --good:#5cd691; --goodbg:#193426; color-scheme:dark}
+.brand .logo{width:28px;height:28px;flex:none}
+.brand.big .logo{width:46px;height:46px}
+.btn.chip[aria-pressed="true"]{background:var(--accent2);color:#152428;border-color:var(--edge2)}
+.ring.r2 .arc{stroke:var(--accent2)}
+#btnGo.wide{grid-column:1/-1}
+
+/* One-line result pill over the top of the map */
+/* The name plate: where the country's real name and flag live */
+#btnMenu{width:46px;height:46px;min-height:46px;padding:0;justify-content:center;border-radius:50%}
+#btnList{position:absolute;top:calc(10px + var(--hidTop,0px));right:max(10px,env(safe-area-inset-right,0px));z-index:4}
+.plate{position:absolute;top:calc(10px + var(--hidTop,0px));left:50%;transform:translateX(-50%);z-index:4;box-sizing:border-box;
+  width:max-content;max-width:calc(100% - 128px);min-height:46px;padding:7px 20px;border-radius:23px;
+  display:flex;align-items:center;gap:12px;color:#f2f6f7;
+  background:rgba(14,26,30,.5);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none}
+.plate.good{background:rgba(31,190,104,.45);border-color:rgba(120,255,180,.35)}
+.plate.bad{background:rgba(214,60,52,.45);border-color:rgba(255,150,140,.35)}
+.plate .pflag{font-size:1.8rem;line-height:1;flex:none}
+.plate .ptext{display:flex;flex-direction:column;min-width:0}
+.plate strong{font-weight:800;font-size:1.05rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plate #plateSub{font-size:.85rem;line-height:1.3;opacity:.85;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.plate #plateSub:empty{display:none}
+@media (max-width:420px){.plate{max-width:calc(100% - 112px)}}
+@media (prefers-reduced-motion:no-preference){.plate{animation:plateIn .22s ease-out}@keyframes plateIn{from{opacity:0;transform:translate(-50%,-6px)}}}
+#btnMenu{display:inline-flex;align-items:center;gap:6px}
+.hintwrap{position:absolute;left:max(10px,env(safe-area-inset-left,0px));bottom:12px;z-index:5}
+.hintmenu{position:absolute;left:0;bottom:calc(100% + 8px);z-index:6;min-width:200px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:2px}
+.hintmenu button{font:inherit;font-weight:600;text-align:left;background:none;border:0;color:var(--ink);padding:11px 16px;border-radius:999px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.hintmenu button:hover,.hintmenu button:focus-visible{background:var(--bg);outline:none}
+.hintmenu button:disabled{color:var(--muted);cursor:default;background:none}
+.hintmenu button[role=menuitemcheckbox]::after{content:"";margin-left:auto;width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border)}
+.hintmenu button[aria-checked=true]::after{background:var(--accent2);border-color:var(--edge2)}
+.btn.chip.on{background:var(--accent2);color:#152428;border-color:var(--edge2)}
+.hintbox{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hflag{font-size:2.4rem;line-height:1}
+.hletters{font-weight:700;font-size:1.35rem;letter-spacing:.18em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.hletters i{font-style:normal;color:var(--muted)}
+.hint{margin:0;color:var(--muted);font-size:.9rem;line-height:1.45}
+#listSheet{z-index:19}
+.listsum{margin:0;color:var(--muted)}
+.listsum b{color:var(--ink);font-size:1.1rem}
+.clist{list-style:none;margin:0;padding:0;columns:2 180px;column-gap:24px}
+.clist li{break-inside:avoid;padding:7px 2px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.clist li::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--border)}
+.clist li.done{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1.5px}
+.clist li.done::before{background:var(--accent);border-color:var(--accent)}
+.clist li.miss:not(.done)::before{background:var(--accent2);border-color:var(--edge2)}
+.menu{position:fixed}
+.btn.gear{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:max(16px,env(safe-area-inset-right,0px));z-index:16;width:48px;height:48px;min-height:48px;padding:0;border-radius:50%;display:grid;place-items:center;background:var(--surface)}
+.menu-in{min-height:100%;box-sizing:border-box;justify-content:flex-start;padding-block:72px 28px}
+.regionrow{margin-top:auto;display:flex;flex-direction:column;gap:2px}
+.regionrow .rhead{display:flex;align-items:baseline;gap:10px}
+.regionrow .rname{font-weight:700;font-size:1.05rem;min-width:0;overflow-wrap:anywhere}
+.textlink{font:inherit;font-size:.85rem;font-weight:700;background:none;border:0;padding:4px 2px;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.textlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.rchips{display:flex;flex-wrap:wrap;gap:8px}
+.rchip{font:inherit;font-weight:700;font-size:.95rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer}
+.rchip{display:inline-flex;align-items:center;gap:8px}
+.rcount{font-size:.8rem;font-weight:600;opacity:.6;font-variant-numeric:tabular-nums}
+.rchip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:transparent}
+.rchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.starts{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.starts .btn{padding-inline:14px}
+#btnAll{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.15;padding-block:8px}
+#btnAll small{font-size:.78rem;font-weight:600;opacity:.75}
+#btnAll{background:var(--accent2);color:#152428;border-color:var(--edge2)}
+#btnAll:focus-visible{outline-color:var(--accent2)}
+button.stats{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;width:100%}
+button.stats:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:16px}
+#settings{z-index:18}
+#settings .sheet-in{max-width:520px}
+#settings .group{display:flex;flex-direction:column;gap:8px}
+#btnGo.won{background:var(--accent);color:var(--accent-ink)}
+#btnGo.lost{background:var(--accent2);color:#152428;border-color:var(--edge2)}
+#btnGo.lost:focus-visible,#btnGo.lost:focus{outline-color:var(--accent2)}
+.ring .edge{fill:none;stroke:var(--edge2);stroke-width:12;stroke-linecap:round}
+</style>
+
+<style>
+/* ---- Glass: controls float over the map, see-through with a blurred backdrop ---- */
+:root{
+  --glass:rgba(12,22,28,.42); --glass-hi:rgba(12,22,28,.58); --glass-line:rgba(255,255,255,.18); --glass-ink:#f4f8f9; --glass-dim:rgba(244,248,249,.72);
+  --glass-shadow:0 2px 10px rgba(0,0,0,.16); --glass-blur:blur(16px) saturate(1.35);
+  --glass-green:rgba(28,200,105,.62); --glass-yellow:rgba(236,226,0,.58); --glass-red:rgba(214,60,52,.55);
+}
+.app{position:relative;grid-template-rows:1fr;grid-template-columns:1fr}
+@media (min-width:900px){.app{grid-template-columns:1fr;grid-template-rows:1fr}.map{margin:0;border-radius:0;border:0}}
+.map{grid-row:1/-1;grid-column:1/-1}
+.btn,.btn.chip,.zoom .btn,.btn.primary,.btn.ghost,input[type=text],.coord,.hintmenu,.sugg,.rchip{
+  background:var(--glass);color:var(--glass-ink);border:1px solid var(--glass-line);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow)}
+.btn{text-shadow:none}
+.btn:hover{background:var(--glass-hi);border-color:rgba(255,255,255,.28)}
+.btn:disabled{opacity:.55}
+.btn.primary,#btnGo.won{background:var(--glass-green);color:#fff;border-color:rgba(150,255,195,.45)}
+#btnAll,#btnGo.lost,.btn.chip.on{background:var(--glass-yellow);color:#fff;border-color:rgba(255,250,150,.5);text-shadow:0 1px 1px rgba(0,0,0,.3)}
+input[type=text]{color:var(--glass-ink);font-weight:600}
+input[type=text]::placeholder{color:var(--glass-dim);opacity:1}
+.coord{color:var(--glass-ink)}
+.hintmenu button,.sugg li{color:var(--glass-ink)}
+.hintmenu button:hover,.hintmenu button:focus-visible,.sugg li[aria-selected=true],.sugg li:hover{background:rgba(255,255,255,.14)}
+.hintmenu button:disabled{color:var(--glass-dim)}
+.hintmenu button[role=menuitemcheckbox]::after{border-color:var(--glass-dim)}
+/* the answer area floats over the bottom of the map */
+.panel{position:absolute;left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));bottom:10px;z-index:5;
+  max-width:560px;margin:0 auto;border:1px solid var(--glass-line)!important;border-radius:30px;padding:12px!important;
+  background:rgba(10,20,26,.34);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-shadow);color:var(--glass-ink)}
+.panel input[type=text]{box-shadow:none}
+.hintwrap,.zoom{bottom:calc(var(--panelH,0px) + 8px)}
+.coord{bottom:calc(var(--panelH,0px) + 12px)}
+.rchip[aria-pressed="true"]{background:var(--glass-green);color:#fff;border-color:rgba(150,255,195,.45)}
+.menu .btn,.sheet .btn,.rchip{text-shadow:none}
+
+/* ---- iOS-sized controls (44pt touch height) ---- */
+.btn{min-height:44px;padding:10px 20px;font-size:1rem}
+.btn.big{min-height:50px;padding:12px 22px;font-size:1.05rem}
+.btn.sm{min-height:36px;padding:7px 16px;font-size:.9rem}
+.btn.chip{min-height:36px;padding:6px 15px;font-size:.92rem}
+#btnMenu,.zoom .btn{width:44px;height:44px;min-height:44px}
+input[type=text]{min-height:44px;height:44px;padding:0 18px;font-size:17px}
+.panel{gap:8px!important}
+.btns{gap:8px}
+.plate{min-height:44px;top:calc(10px + var(--hidTop,0px))}
+.rchip{min-height:36px;padding:7px 15px}
+.menu select{min-height:44px;padding-block:9px}
+
+/* Bottom panel shaped like the iOS dock: concentric with the screen corners */
+.panel{left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));bottom:8px;border-radius:44px;padding:12px!important}
+
+/* Home screen and settings sit on a solid background: no glass there */
+.menu .btn,.sheet .btn,.menu .rchip,.sheet .rchip,.menu select,.sheet select{
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;text-shadow:none;
+  background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.menu .btn:hover,.sheet .btn:hover{background:var(--surface);border-color:var(--border)}
+.menu .btn.primary,.sheet .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.menu #btnAll{background:var(--accent2);color:#152428;border-color:var(--edge2)}
+.sheet .rchip[aria-pressed="true"],.menu .rchip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:transparent}
+.menu .btn.gear{box-shadow:none}
+.menu *,.sheet *{text-shadow:none!important}
+.menu #btnAll,.menu #btnAll small{text-shadow:none!important;color:#152428}
+
+/* Pop-ups and overlays share the panel's radius, blur and shadow.
+   (The suggestion list lives outside the panel: a blur can't see through another blurred box.) */
+.sugg{position:absolute;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));top:auto;
+  bottom:calc(var(--panelH,0px) + 6px);max-width:560px;margin:0 auto;z-index:6;border-radius:44px;padding:10px;
+  background:rgba(10,20,26,.34);border:1px solid var(--glass-line)}
+@media (min-width:900px){.sugg{top:auto;bottom:calc(var(--panelH,0px) + 6px)}}
+.sugg li{min-height:44px;display:flex;align-items:center;padding:0 18px;border-radius:999px;font-size:17px}
+.hintmenu{border-radius:32px;padding:8px;background:rgba(10,20,26,.34)}
+.hintmenu button{min-height:44px;padding:0 18px}
+.plate{box-shadow:var(--glass-shadow)}
+/* Name box: darker glass so the text reads over any country colour, and nothing is cut off */
+.plate{background:rgba(8,16,22,.72);border-color:rgba(255,255,255,.2);padding:9px 20px;align-items:center}
+.plate.good{background:rgba(18,150,78,.82);border-color:rgba(150,255,195,.45)}
+.plate.bad{background:rgba(176,40,34,.82);border-color:rgba(255,160,150,.45)}
+.plate strong{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;color:#fff;font-size:1.1rem;text-wrap:balance}
+.plate #plateSub{display:block;-webkit-line-clamp:unset;overflow:visible;opacity:1;color:rgba(255,255,255,.88);white-space:normal}
+
+/* Focus: no outer rings. The element's own border takes the colour instead. */
+*:focus,*:focus-visible{outline:none!important}
+.btn:focus-visible,.rchip:focus-visible,select:focus-visible,.seg label:has(input:focus-visible),
+input[type=text]:focus,#btnGo:focus,#btnGo:focus-visible{
+  border-color:var(--accent)!important;box-shadow:inset 0 0 0 1px var(--accent),var(--glass-shadow)}
+.menu .btn:focus-visible,.sheet .btn:focus-visible,.menu .rchip:focus-visible,.sheet .rchip:focus-visible,.menu select:focus-visible,.sheet select:focus-visible{
+  box-shadow:inset 0 0 0 1px var(--accent)}
+#btnGo.lost:focus,#btnGo.lost:focus-visible,#btnAll:focus-visible,.btn.chip.on:focus-visible{
+  border-color:var(--accent2)!important;box-shadow:inset 0 0 0 1px var(--accent2),var(--glass-shadow)}
+.menu #btnAll:focus-visible{box-shadow:inset 0 0 0 1px var(--accent2)}
+.hintmenu button:focus-visible,.sugg li[aria-selected=true]{box-shadow:inset 0 0 0 1.5px var(--accent)}
+button.stats:focus-visible .ring .track{stroke:var(--accent);opacity:1}
+.textlink:focus-visible{text-decoration-thickness:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="map" id="map">
+    <canvas id="cv" aria-label="Map with one country highlighted"></canvas>
+    <div class="mapbar">
+      <button class="btn chip" id="btnMenu" aria-label="Back to menu" title="Back to menu"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 14 4 9l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="hintwrap">
+      <button class="btn chip" id="btnHint" aria-haspopup="menu" aria-expanded="false" disabled>Hint</button>
+      <div class="hintmenu" id="hintMenu" role="menu" hidden>
+        <button role="menuitemcheckbox" aria-checked="false" id="hNames">Show names</button>
+        <button role="menuitem" id="hFlag">Show flag</button>
+        <button role="menuitem" id="hLetter">Reveal 1st letter</button>
+      </div>
+    </div>
+    <div class="zoom" id="zoomBox" hidden>
+      <button class="btn" id="zIn" aria-label="Zoom in">+</button>
+      <button class="btn" id="zOut" aria-label="Zoom out">−</button>
+      <button class="btn" id="zReset" aria-label="Recenter" title="Recenter" style="font-size:.95rem">⌖</button>
+    </div>
+    <div class="coord" id="coord" hidden></div>
+    <button class="btn chip" id="btnList" hidden>List</button>
+    <div id="resultBox" class="plate" role="status" aria-live="polite" hidden>
+      <span class="pflag" id="plateFlag" hidden></span>
+      <span class="ptext"><strong id="plateTitle"></strong><span id="plateSub"></span></span>
+    </div>
+    <div class="loading" id="loading">Loading border data…</div>
+  </section>
+
+  <section class="panel">
+    <div class="field">
+      <input type="text" id="guess" placeholder="Type your guess" name="ew-answer" aria-label="Your guess" autocomplete="off" autocorrect="off" data-form-type="other" autocapitalize="words" spellcheck="false" enterkeyhint="go" disabled>
+    </div>
+    <div class="btns">
+      <button class="btn primary" id="btnGo" disabled>Guess</button>
+      <button class="btn" id="btnSkip" disabled>I don't know</button>
+    </div>
+  </section>
+  <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+</div>
+
+<div class="menu" id="menu">
+  <button class="btn gear" id="btnSettings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
+  <div class="menu-in">
+    <div class="hero">
+      <div class="brand big"><svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><path d="M12.0 17.7 L15.2 16.3 L21.8 20.1 L27.8 20.5 L31.3 22.4 L31.7 26.1 L36.4 27.9 L41.5 30.3 L51.0 29.3 L51.4 27.5 L56.9 24.2 L64.4 23.3 L72.2 26.6 L76.6 30.7 L79.7 30.7 L79.3 35.4 L77.0 41.9 L78.5 45.1 L77.4 54.4 L81.7 54.9 L82.1 57.7 L78.5 62.3 L80.5 64.6 L84.8 69.3 L86.0 73.9 L88.0 76.2 L82.1 79.0 L81.3 83.7 L73.4 82.7 L64.4 80.4 L62.4 74.8 L59.6 74.4 L54.5 77.6 L49.4 75.8 L45.5 72.5 L41.1 71.1 L38.8 66.5 L36.0 60.4 L31.7 59.1 L30.1 61.8 L27.8 59.1 L27.8 56.7 L26.6 56.7 L26.6 52.1 L20.3 47.4 L17.5 43.3 L18.3 40.5 L15.9 38.2 L20.3 34.9 L17.5 33.5 L15.2 27.9 L12.8 24.7 L13.6 22.8Z" fill="var(--accent)" stroke="var(--accent)" stroke-width="15" stroke-linejoin="round"/></svg>Earthy Wisdom</div>
+      <p class="tag">Name the highlighted country. Misses come back until you know them.</p>
+    </div>
+    <button class="stats" id="menuStats" aria-label="See my progress"></button>
+    <div class="regionrow">
+      <div class="rhead"><span class="lbl">Region</span><button class="textlink" id="btnEditRegion">Edit</button></div>
+      <span class="rname" id="regionLabel">Whole world</span>
+    </div>
+    <div class="starts" style="margin-top:0">
+      <button class="btn big" id="btnAll" disabled>Name them all</button>
+      <button class="btn primary big" id="btnStart" disabled>Loading map…</button>
+    </div>
+    <p class="note" id="menuNote" hidden></p>
+  </div>
+</div>
+
+<div class="sheet" id="settings" hidden>
+  <div class="sheet-in">
+    <div class="sheet-head"><h2>Settings</h2><button class="btn sm" id="btnSetDone">Done</button></div>
+    <div class="group" id="regionGroup">
+      <span class="lbl" id="regionLbl">Region · pick one or more</span>
+      <div class="rchips" id="regionChips" role="group" aria-labelledby="regionLbl">
+        <button class="rchip" data-r="World">Whole world</button>
+        <button class="rchip" data-r="Europe">Europe</button>
+        <button class="rchip" data-r="Asia">Asia</button>
+        <button class="rchip" data-r="Africa">Africa</button>
+        <button class="rchip" data-r="NorthAmerica">North America</button>
+        <button class="rchip" data-r="SouthAmerica">South America</button>
+        <button class="rchip" data-r="Oceania">Oceania</button>
+      </div>
+      <label class="chk" id="terrRow"><input type="checkbox" id="chkTerr"> Include territories (Greenland, Puerto Rico…)</label>
+    </div>
+    <div class="group">
+      <label class="lbl" for="selMode">Which countries to ask in practice</label>
+      <select id="selMode">
+        <option value="smart">Smart mix: new ones and misses first</option><option value="misses">Only my misses</option><option value="new">Only ones I haven't seen</option>
+      </select>
+    </div>
+    <div class="group">
+      <span class="lbl">Map projection</span>
+      <div class="seg" role="radiogroup" aria-label="Map projection">
+        <label><input type="radio" name="proj" value="globe"> Globe</label>
+        <label><input type="radio" name="proj" value="equalearth"> Equal Earth</label>
+      </div>
+    </div>
+    <button class="btn" id="btnProgress">See my progress</button>
+    <div class="save" id="saveState">Progress saved on this device</div>
+    <p class="save" id="mapSource"></p>
+  </div>
+</div>
+
+<div class="sheet" id="listSheet" hidden>
+  <div class="sheet-in">
+    <div class="sheet-head"><h2 id="listTitle">Countries</h2><button class="btn sm" id="btnListClose">Back to map</button></div>
+    <p class="listsum" id="listSum"></p>
+    <ul class="clist" id="cList"></ul>
+    <div class="confirm" id="runResetBox"></div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-in">
+    <div class="sheet-head"><h2>Your progress</h2><button class="btn sm" id="btnClose">Back to map</button></div>
+    <div class="sum" id="sum"></div>
+    <div><h3>Needs work</h3><ul class="list" id="lWeak"></ul></div>
+    <div><h3>Learning</h3><ul class="list" id="lMid"></ul></div>
+    <div><h3>Mastered <span style="font-weight:400;color:var(--muted);font-size:.85rem">(3 right in a row)</span></h3><ul class="list" id="lGood"></ul></div>
+    <div class="confirm" id="resetBox"><button class="btn sm ghost" id="btnReset">Reset all progress</button></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(() => {
+"use strict";
+window.addEventListener("error", e => { const el = document.getElementById("saveState"); if (el) el.textContent = "Error: " + (e.message || "unknown") + " (line " + (e.lineno||"?") + ")"; });
+window.addEventListener("unhandledrejection", e => { const el = document.getElementById("saveState"); if (el) el.textContent = "Error: " + ((e.reason && e.reason.message) || e.reason || "unknown"); });
+// ---------- Country reference ----------
+const NAMES = `AD Andorra
+AE United Arab Emirates|UAE|Emirates
+AF Afghanistan
+AG Antigua and Barbuda|Antigua
+AL Albania
+AM Armenia
+AO Angola
+AR Argentina
+AT Austria
+AU Australia
+AZ Azerbaijan
+BA Bosnia and Herzegovina|Bosnia|Bosnia-Herzegovina
+BB Barbados
+BD Bangladesh
+BE Belgium
+BF Burkina Faso
+BG Bulgaria
+BH Bahrain
+BI Burundi
+BJ Benin
+BN Brunei|Brunei Darussalam
+BO Bolivia
+BR Brazil
+BS Bahamas
+BT Bhutan
+BW Botswana
+BY Belarus
+BZ Belize
+CA Canada
+CD DR Congo|Democratic Republic of the Congo|DRC|Congo-Kinshasa|Congo
+CF Central African Republic|CAR
+CG Republic of the Congo|Congo-Brazzaville|Congo
+CH Switzerland
+CI Ivory Coast|Côte d'Ivoire
+CL Chile
+CM Cameroon
+CN China
+CO Colombia
+CR Costa Rica
+CU Cuba
+CV Cape Verde|Cabo Verde
+CY Cyprus
+CZ Czechia|Czech Republic
+DE Germany
+DJ Djibouti
+DK Denmark
+DM Dominica
+DO Dominican Republic
+DZ Algeria
+EC Ecuador
+EE Estonia
+EG Egypt
+ER Eritrea
+ES Spain
+ET Ethiopia
+FI Finland
+FJ Fiji
+FM Micronesia|Federated States of Micronesia
+FR France
+GA Gabon
+GB United Kingdom|UK|Great Britain|Britain|England
+GD Grenada
+GE Georgia
+GH Ghana
+GM Gambia
+GN Guinea
+GQ Equatorial Guinea
+GR Greece
+GT Guatemala
+GW Guinea-Bissau
+GY Guyana
+HN Honduras
+HR Croatia
+HT Haiti
+HU Hungary
+ID Indonesia
+IE Ireland
+IL Israel
+IN India
+IQ Iraq
+IR Iran
+IS Iceland
+IT Italy
+JM Jamaica
+JO Jordan
+JP Japan
+KE Kenya
+KG Kyrgyzstan
+KH Cambodia
+KI Kiribati
+KM Comoros
+KN Saint Kitts and Nevis|St Kitts and Nevis
+KP North Korea
+KR South Korea|Korea
+KW Kuwait
+KZ Kazakhstan
+LA Laos
+LB Lebanon
+LC Saint Lucia|St Lucia
+LI Liechtenstein
+LK Sri Lanka
+LR Liberia
+LS Lesotho
+LT Lithuania
+LU Luxembourg
+LV Latvia
+LY Libya
+MA Morocco
+MC Monaco
+MD Moldova
+ME Montenegro
+MG Madagascar
+MH Marshall Islands
+MK North Macedonia|Macedonia
+ML Mali
+MM Myanmar|Burma
+MN Mongolia
+MR Mauritania
+MT Malta
+MU Mauritius
+MV Maldives
+MW Malawi
+MX Mexico
+MY Malaysia
+MZ Mozambique
+NA Namibia
+NE Niger
+NG Nigeria
+NI Nicaragua
+NL Netherlands|Holland
+NO Norway
+NP Nepal
+NR Nauru
+NZ New Zealand
+OM Oman
+PA Panama
+PE Peru
+PG Papua New Guinea|PNG
+PH Philippines
+PK Pakistan
+PL Poland
+PS Palestine
+PT Portugal
+PW Palau
+PY Paraguay
+QA Qatar
+RO Romania
+RS Serbia
+RU Russia|Russian Federation
+RW Rwanda
+SA Saudi Arabia
+SB Solomon Islands
+SC Seychelles
+SD Sudan
+SE Sweden
+SG Singapore
+SI Slovenia
+SK Slovakia
+SL Sierra Leone
+SM San Marino
+SN Senegal
+SO Somalia
+SR Suriname|Surinam
+SS South Sudan
+ST São Tomé and Príncipe|Sao Tome
+SV El Salvador
+SY Syria
+SZ Eswatini|Swaziland
+TD Chad
+TG Togo
+TH Thailand
+TJ Tajikistan
+TL Timor-Leste|East Timor
+TM Turkmenistan
+TN Tunisia
+TO Tonga
+TR Turkey|Türkiye
+TT Trinidad and Tobago|Trinidad
+TV Tuvalu
+TW Taiwan
+TZ Tanzania
+UA Ukraine
+UG Uganda
+US United States|USA|US|United States of America|America
+UY Uruguay
+UZ Uzbekistan
+VA Vatican City|Vatican|Holy See
+VC Saint Vincent and the Grenadines|St Vincent
+VE Venezuela
+VN Vietnam|Viet Nam
+VU Vanuatu
+WS Samoa
+XK Kosovo
+YE Yemen
+ZA South Africa
+ZM Zambia
+ZW Zimbabwe`;
+const CONT = {
+  Europe:"AD AL AT BA BE BG BY CH CY CZ DE DK EE ES FI FR GB GR HR HU IE IS IT LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS RU SE SI SK SM UA VA XK",
+  Asia:"AE AF AM AZ BD BH BN BT CN GE ID IL IN IQ IR JO JP KG KH KP KR KW KZ LA LB LK MM MN MV MY NP OM PH PK PS QA SA SG SY TH TJ TL TM TR TW UZ VN YE",
+  Africa:"AO BF BI BJ BW CD CF CG CI CM CV DJ DZ EG ER ET GA GH GM GN GQ GW KE KM LR LS LY MA MG ML MR MU MW MZ NA NE NG RW SC SD SL SN SO SS ST SZ TD TG TN TZ UG ZA ZM ZW",
+  NorthAmerica:"CA US MX BZ CR GT HN NI PA SV AG BB BS CU DM DO GD HT JM KN LC TT VC",
+  SouthAmerica:"AR BO BR CL CO EC GY PE PY SR UY VE",
+  Oceania:"AU FJ FM KI MH NR NZ PG PW SB TO TV VU WS"
+};
+const CANON = {};
+NAMES.split("\n").forEach(l => { const i = l.indexOf(" "); CANON[l.slice(0,i)] = l.slice(i+1).split("|"); });
+// Territories and dependencies, by the continent they sit in
+const TERR_CONT = {};
+Object.entries({
+  NorthAmerica:"GL PM BM PR VI VG AI MS KY TC AW CW SX MF BL GP MQ BQ",
+  SouthAmerica:"GF FK GS",
+  Europe:"FO GI IM JE GG AX SJ",
+  Asia:"HK MO IO",
+  Africa:"EH RE YT SH TF",
+  Oceania:"NC PF GU MP AS CK NU TK WF PN NF CX CC HM UM"
+}).forEach(([c, ids]) => ids.split(" ").forEach(id => TERR_CONT[id] = c));
+// Anything not listed: place it by where its centre is
+function guessCont(lon, lat){
+  if (lat < -58) return null;
+  if (lon < -30) return lat > 7 ? "NorthAmerica" : "SouthAmerica";
+  if (lon < 60 && lat > 35) return "Europe";
+  if (lon < 52 && lat < 35 && lon > -20 && !(lon > 34 && lat > 12)) return "Africa";
+  if (lon > 110 && lat < -10 || lon > 140) return "Oceania";
+  return "Asia";
+}
+const CONT_OF = {};
+for (const [c, s] of Object.entries(CONT)) s.split(" ").forEach(id => CONT_OF[id] = c);
+
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()
+  .replace(/&/g," and ").replace(/\bst\.?\s/g,"saint ").replace(/[^a-z0-9 ]+/g," ")
+  .replace(/^\s*the\s+/,"").replace(/\s+/g," ").trim();
+function lev(a,b){ if(a===b) return 0; const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let p=Array.from({length:n+1},(_,j)=>j); for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c;} return p[n]; }
+
+// ---------- State & storage ----------
+const LS_KEY = "borderline.progress.v1", LS_SET = "borderline.settings.v1";
+let stats = {};            // id -> {r,w,s,l,t}
+let countries = [];        // question-able records
+let byId = {};
+let allFeatures = [];
+let settings = { regions:[], mode:"smart", terr:false, proj:"globe", game:"practice" };
+let cur = null, phase = "loading", guessRec = null, showNames = false, recent = [];
+let session = { right:0, total:0, streak:0 };
+let db = null, docRef = null, writing = false, pendingWrite = false, saveTimer = null;
+
+try { Object.assign(settings, JSON.parse(localStorage.getItem(LS_SET) || "{}")); } catch(e){}
+// older saves kept a single region
+if (!Array.isArray(settings.regions)) settings.regions = settings.region && settings.region !== "World" ? [settings.region] : [];
+delete settings.region;
+// Central America was briefly its own region: fold it back into North America
+settings.regions = [...new Set(settings.regions.map(r => r === "CentralAmerica" ? "NorthAmerica" : r))];
+delete settings._splitNA;
+const isWorld = () => !settings.regions.length;
+try { stats = JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch(e){ stats = {}; }
+const totalAnswers = s => Object.values(s||{}).reduce((a,v)=>a+(v.r||0)+(v.w||0),0);
+
+function persist(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(stats)); } catch(e){}
+  if (!docRef) return;
+  clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700);
+}
+async function flush(){
+  if (writing){ pendingWrite = true; return; }
+  writing = true;
+  try { await docRef.set({ stats, updated: Date.now() }); setSave("Progress synced to your account"); }
+  catch(e){ setSave("Progress saved on this device (sync failed)"); }
+  writing = false;
+  if (pendingWrite){ pendingWrite = false; flush(); }
+}
+const setSave = t => { $("saveState").textContent = t; };
+async function connectDb(){
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [d, u] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!d || !u) return;
+    const uid = await u.id(); if (!uid) return;
+    db = d; docRef = db.doc("data/users/" + uid + "/progress");
+    const snap = await Promise.race([docRef.get(), new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),10000))]);
+    const remote = snap && snap.exists !== false && snap.data ? snap.data() : null;
+    if (remote && remote.stats && totalAnswers(remote.stats) >= totalAnswers(stats)){
+      stats = JSON.parse(JSON.stringify(remote.stats)); try{localStorage.setItem(LS_KEY, JSON.stringify(stats));}catch(e){}
+      updateTally();
+    } else if (totalAnswers(stats) > 0) { flush(); }
+    setSave("Progress synced to your account");
+  } catch(e){ docRef = null; }
+}
+
+// ---------- DOM ----------
+const $ = id => document.getElementById(id);
+const cv = $("cv"), ctx = cv.getContext("2d");
+let W = 0, H = 0, DPR = 1, colors = {};
+function readColors(){
+  const cs = getComputedStyle(document.documentElement);
+  ["space","landfill","mapline","mapink","spaceink","ocean","water","land","border","grat","ink","muted","accent","bad","good","bg","surface"].forEach(k => colors[k] = cs.getPropertyValue("--"+k).trim());
+}
+readColors();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
+new MutationObserver(() => { readColors(); draw(); }).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+
+// ---------- Data loading ----------
+function loadScript(url){
+  return new Promise((res, rej) => {
+    const s = document.createElement("script"); s.src = url; s.async = true;
+    const t = setTimeout(() => rej(new Error("timeout")), 45000);
+    s.onload = () => { clearTimeout(t); res(); }; s.onerror = () => { clearTimeout(t); rej(new Error("load")); };
+    document.head.appendChild(s);
+  });
+}
+const loadLog = [];
+const withTimeout = (pr, ms) => Promise.race([pr, new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")), ms))]);
+async function ensureTopo(){
+  if (window.topojson && window.topojson.feature) return;
+  try { await loadScript("https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"); } catch(e){}
+  if (!(window.topojson && window.topojson.feature)) await loadScript("https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js");
+}
+// Natural Earth style short names -> ISO2
+const NE_ALIASES = {"united states of america":"US","dem rep congo":"CD","democratic republic of the congo":"CD","central african rep":"CF","bosnia and herz":"BA",
+ "dominican rep":"DO","eq guinea":"GQ","s sudan":"SS","solomon is":"SB","eswatini":"SZ","macedonia":"MK","republic of serbia":"RS","united republic of tanzania":"TZ",
+ "guinea bissau":"GW","antigua and barb":"AG","saint vin and gren":"VC","saint vincent and the grenadines":"VC","marshall is":"MH","sao tome and principe":"ST",
+ "republic of the congo":"CG","congo":"CG","east timor":"TL","czech republic":"CZ","kosovo":"XK","korea":"KR","dem rep korea":"KP","lao pdr":"LA","brunei darussalam":"BN",
+ "russian federation":"RU","w sahara":"EH","western sahara":"EH","falkland is":"FK","greenland":"GL","puerto rico":"PR","n cyprus":"","northern cyprus":"","somaliland":"",
+ "taiwan":"TW","palestine":"PS","west bank":"PS","fr s antarctic lands":"TF","new caledonia":"NC","fr polynesia":"PF","antarctica":"AQ"};
+let nameIndex = null;
+function nameToIso(name){
+  if (!nameIndex){ nameIndex = {}; for (const [id, arr] of Object.entries(CANON)) arr.forEach(a => nameIndex[norm(a)] = id); }
+  const n = norm(String(name || "").replace(/\bRep\b\.?/g,"Republic").replace(/\./g," "));
+  const n2 = norm(name);
+  if (n2 in NE_ALIASES) return NE_ALIASES[n2];
+  if (n in NE_ALIASES) return NE_ALIASES[n];
+  return nameIndex[n2] || nameIndex[n] || "";
+}
+function fromTopo(t){
+  const key = Object.keys(t.objects).find(k => /countr|world|land/i.test(k)) || Object.keys(t.objects)[0];
+  const fc = window.topojson.feature(t, t.objects[key]);
+  fc.features.forEach(f => { const nm = (f.properties && (f.properties.name || f.properties.NAME)) || ""; f.properties = { name: nm, id: nameToIso(nm) || ("~" + nm) }; });
+  return fc;
+}
+async function loadGeo(){
+  const amV = ["4.1.32","4.1.30"];
+  const sources = [];
+  for (const v of amV) sources.push(["amCharts " + v + " (module)", async () => {
+    const m = await import(`https://cdn.jsdelivr.net/npm/@amcharts/amcharts4-geodata@${v}/worldHigh.js`);
+    return m.default || m.am4geodata_worldHigh || m;
+  }]);
+  for (const v of amV) sources.push(["amCharts " + v + " (script)", async () => {
+    await loadScript(`https://cdn.jsdelivr.net/npm/@amcharts/amcharts4-geodata@${v}/dist/script/worldHigh.js`);
+    const key = Object.keys(window).find(k => k.startsWith("am4geodata_world")); return key && window[key];
+  }]);
+  sources.push(["Natural Earth 50m (module)", async () => {
+    await ensureTopo();
+    const m = await import("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json/+esm");
+    return fromTopo(m.default || m);
+  }]);
+  sources.push(["Datamaps hi-res", async () => {
+    await ensureTopo();
+    try { await loadScript("https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.9/datamaps.world.hires.min.js"); }
+    catch(e){ await loadScript("https://cdn.jsdelivr.net/npm/datamaps@0.5.9/dist/datamaps.world.hires.min.js"); }
+    const D = window.Datamap || window.Datamaps; const t = D && D.prototype && D.prototype.worldTopo;
+    if (!t) throw new Error("no data"); return fromTopo(t);
+  }]);
+  for (const [label, fn] of sources){
+    $("loading").textContent = "Loading border data… (" + label + ")";
+    try {
+      const gj = await withTimeout(fn(), 45000);
+      if (gj && gj.features && gj.features.length > 100) { loadLog.push(label + ": ok"); return gj; }
+      loadLog.push(label + ": no countries in file");
+    } catch(e){ loadLog.push(label + ": " + (e && e.message ? e.message.slice(0,80) : "failed")); }
+  }
+  throw new Error("Could not load border data");
+}
+// Make polygon rings follow d3's winding (exterior clockwise); reverse any polygon that covers more than a hemisphere.
+function fixWinding(geom){
+  const planar = r => { let a = 0; for (let i = 0, n = r.length - 1; i < n; i++) a += r[i][0]*r[i+1][1] - r[i+1][0]*r[i][1]; return a/2; };
+  const touchesPole = r => r.some(p => Math.abs(p[1]) > 89);
+  const big = r => d3.geoArea({type:"Polygon", coordinates:[r]}) > 2*Math.PI;
+  // exterior rings must enclose less than half the globe; holes must be wound the other way
+  const fixRing = (r, hole) => {
+    let wrong;
+    if (touchesPole(r)) wrong = hole ? planar(r) < 0 : planar(r) > 0;
+    else wrong = hole ? !big(r) : big(r);
+    return wrong ? r.slice().reverse() : r;
+  };
+  const fixPoly = rings => rings.map((r, i) => fixRing(r, i > 0));
+  if (geom.type === "Polygon") geom.coordinates = fixPoly(geom.coordinates);
+  else if (geom.type === "MultiPolygon") geom.coordinates = geom.coordinates.map(fixPoly);
+}
+// Last line of defence: a feature that still covers more than half the globe is inside-out
+function invertedFeature(f){ try { return d3.geoArea(f) > 2*Math.PI; } catch(e){ return true; } }
+function reverseAll(g){
+  const rev = p => p.map(r => r.slice().reverse());
+  if (g.type === "Polygon") g.coordinates = rev(g.coordinates);
+  else if (g.type === "MultiPolygon") g.coordinates = g.coordinates.map(rev);
+}
+function largestPart(f){
+  const g = f.geometry;
+  if (g.type !== "MultiPolygon") return f;
+  let best = null, ba = -1;
+  for (const p of g.coordinates){ const a = d3.geoArea({type:"Polygon",coordinates:p}); if (a > ba){ ba = a; best = p; } }
+  return {type:"Feature", geometry:{type:"Polygon", coordinates:best}};
+}
+
+function prepare(gj){
+  allFeatures = gj.features.filter(f => f.geometry);
+  allFeatures.forEach(f => {
+    fixWinding(f.geometry);
+    if (invertedFeature(f)) reverseAll(f.geometry);
+    if (invertedFeature(f)) f._noFill = true;   // still wrong: draw its border only
+  });
+  for (const f of allFeatures){
+    let id = String(f.properties.id || "").toUpperCase();
+    if (id === "KV") id = "XK";
+    if (!id || id === "AQ") { f._id = id; continue; }
+    f._id = id;
+    const canon = CANON[id];
+    const name = canon ? canon[0] : (f.properties.name || id);
+    const aliases = new Set([...(canon || [name]), f.properties.name || name].map(norm).filter(Boolean));
+    const core = largestPart(f);
+    const rec = { id, name, aliases, f, sovereign: !!canon, cont: CONT_OF[id] || TERR_CONT[id] || null,
+      center: d3.geoCentroid(core), core };
+    if (!rec.cont && !rec.sovereign) rec.cont = guessCont(rec.center[0], rec.center[1]);
+    countries.push(rec); byId[id] = rec; f._rec = rec;
+  }
+  countries.sort((a,b) => a.name.localeCompare(b.name));
+  for (const f of allFeatures){
+    const g = simplifyGeom(f.geometry, 0.25); f._lo = g ? { type:"Feature", geometry:g } : null;
+    if (f._lo && invertedFeature(f._lo)) f._lo = f._noFill ? null : f;
+  }
+  for (const r of countries) if (!r.f._lo) r.f._lo = r.f;   // keep tiny countries visible while moving
+  colorCountries();
+}
+
+// ---------- Map colouring: neighbours never share a colour ----------
+// 25 soft but clear tints around the whole colour wheel
+const MAP_COLORS = ["#d9a1a1", "#dec3ba", "#d9bba1", "#ded2ba", "#d9d1a1", "#dcdeba", "#c8d9a1", "#c9deba", "#a8d9a1", "#badec0", "#a1d9bb", "#baded5", "#a1d4d9", "#bad3de", "#a1bdd9", "#bac5de", "#a1a6d9", "#bdbade", "#b2a1d9", "#ccbade", "#caa1d9", "#ddbade", "#d9a1cd", "#debace", "#d9a1b2"];
+function colorCountries(){
+  const feats = allFeatures.filter(f => !f._noFill);
+  const G = 0.05, cell = new Map(), adj = feats.map(() => new Set());
+  const keyOf = p => Math.round(p[0]/G) + "," + Math.round(p[1]/G);
+  feats.forEach((f, i) => {
+    const g = f.geometry, polys = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : [];
+    const seen = new Set();
+    for (const poly of polys) for (const ring of poly) for (const p of ring){
+      const k = keyOf(p); if (seen.has(k)) continue; seen.add(k);
+      const list = cell.get(k);
+      if (list){ for (const j of list) if (j !== i){ adj[i].add(j); adj[j].add(i); } list.push(i); }
+      else cell.set(k, [i]);
+    }
+  });
+  // DSATUR: colour the most constrained country first
+  const col = new Array(feats.length).fill(-1), sat = feats.map(() => new Set());
+  const used = new Array(MAP_COLORS.length).fill(0);
+  for (let n = 0; n < feats.length; n++){
+    let best = -1;
+    for (let i = 0; i < feats.length; i++){
+      if (col[i] >= 0) continue;
+      if (best < 0 || sat[i].size > sat[best].size || (sat[i].size === sat[best].size && adj[i].size > adj[best].size)) best = i;
+    }
+    // among colours its neighbours don't use, take the least used so far (ties broken by a fixed shuffle)
+    let c = -1, cu = Infinity;
+    for (let k = 0; k < MAP_COLORS.length; k++){
+      const cc = (k + best*7) % MAP_COLORS.length;
+      if (sat[best].has(cc)) continue;
+      if (used[cc] < cu){ cu = used[cc]; c = cc; }
+    }
+    if (c < 0) c = 0;
+    col[best] = c; used[c]++;
+    for (const j of adj[best]) sat[j].add(c);
+  }
+  feats.forEach((f, i) => { f._color = col[i]; });
+}
+
+// ---------- Projection & drawing ----------
+let proj, path;
+const isGlobe = () => settings.proj !== "equalearth";
+function makeProj(){
+  proj = isGlobe() ? d3.geoOrthographic().clipAngle(90).precision(0.4) : d3.geoEqualEarth().precision(0.4);
+  path = d3.geoPath(proj, ctx);
+}
+makeProj();
+proj.rotate([-15, -20]);
+const grat = d3.geoGraticule10();
+let base = { k:1, t:[0,0], rot:[0,0] }, zoom = 1;
+
+let viewMode = "globe", anim = null;
+function resize(){
+  const r = cv.getBoundingClientRect(); DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = Math.max(1, r.width); H = Math.max(1, r.height);
+  cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+  if (anim) return;
+  if (cur) setView(viewMode === "country" ? countryView(cur) : globeView(cur.center), false);
+  else setView(globeView(currentCenter()), false);
+}
+const currentCenter = () => { const r = proj.rotate(); return [-r[0], -r[1]]; };
+// Framing for one country
+function countryView(rec){
+  const save = [proj.rotate(), proj.scale(), proj.translate()];
+  const v = countryViewRaw(rec);
+  proj.rotate(save[0]).scale(save[1]).translate(save[2]);
+  return v;
+}
+function countryViewRaw(rec){
+  const m = Math.min(W, H);
+  if (!isGlobe()) return countryViewFlat(rec, m);
+  proj.rotate([-rec.center[0], -rec.center[1]]).scale(1).translate([W/2, H/2]);
+  const padX = W*0.22, padY = H*0.22;
+  proj.fitExtent([[padX,padY],[W-padX,H-padY]], rec.f);
+  let k = proj.scale(), t = proj.translate();
+  if (k < m/2.2) { proj.fitExtent([[padX,padY],[W-padX,H-padY]], rec.core); k = proj.scale(); t = proj.translate(); }
+  const kMin = m/2.15, kMax = m/0.13;
+  if (k < kMin || k > kMax){ k = Math.max(kMin, Math.min(kMax, k)); t = [W/2, H/2]; }
+  return { k, t, rot: proj.rotate().slice() };
+}
+function countryViewFlat(rec, m){
+  const padX = W*0.22, padY = H*0.22, ext = [[padX,padY],[W-padX,H-padY]];
+  proj.rotate([-rec.center[0], 0]);
+  const kMin = d3.geoEqualEarth().rotate([-rec.center[0],0]).fitExtent([[8,8],[W-8,H-8]], {type:"Sphere"}).scale();
+  proj.fitExtent(ext, rec.f);
+  if (proj.scale() < kMin*1.6) proj.fitExtent(ext, rec.core);
+  let k = proj.scale(), t = proj.translate();
+  const kMax = m/0.13;
+  if (k < kMin || k > kMax){
+    k = Math.max(kMin, Math.min(kMax, k));
+    proj.scale(k).translate([W/2, H/2]);
+    const p = proj(rec.center); t = [W - p[0], H - p[1]];
+  }
+  return { k, t, rot: proj.rotate().slice() };
+}
+// Whole globe (or whole map), centred on a point
+function globeView(center){
+  if (isGlobe()) return { k: Math.min(W, H)/2.15, t:[W/2, H/2], rot:[-center[0], -center[1]] };
+  const p = d3.geoEqualEarth().rotate([-center[0],0]).fitExtent([[10,10],[W-10,H-10]], {type:"Sphere"});
+  return { k: p.scale(), t: p.translate(), rot:[-center[0], 0] };
+}
+function setView(v, resetZoom = true){ cancelAnim(); if (resetZoom) zoom = 1; base = { k:v.k, t:v.t.slice(), rot:v.rot.slice() }; applyZoom(); }
+function cancelAnim(){
+  if (!anim) return;
+  cancelAnimationFrame(anim.id); anim = null;
+  zoom = 1; base = { k: proj.scale(), t: proj.translate().slice(), rot: proj.rotate().slice() };
+}
+function animateTo(v, dur = 1500, onDone){
+  cancelAnim();
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !W){ setView(v); if (onDone) onDone(); return; }
+  const from = { k: proj.scale(), t: proj.translate().slice(), rot: proj.rotate().slice() };
+  zoom = 1;
+  const c0 = [-from.rot[0], -from.rot[1]], c1 = [-v.rot[0], -v.rot[1]];
+  const ic = d3.geoInterpolate(c0, c1);
+  const angle = d3.geoDistance(c0, c1), zoomIn = v.k >= from.k;
+  const lk0 = Math.log(from.k), lk1 = Math.log(v.k), zoomAmt = Math.abs(lk1 - lk0);
+  // split time between the turn and the zoom; skip a phase that has nothing to do
+  let split = angle < 0.01 ? (zoomIn ? 0 : 1) : zoomAmt < 0.05 ? (zoomIn ? 1 : 0) : 0.5;
+  const ease = d3.easeCubicInOut, t0 = performance.now();
+  const step = now => {
+    const u = Math.min(1, (now - t0)/dur);
+    let er, ez;   // rotation progress, zoom progress
+    if (zoomIn){ er = split ? ease(Math.min(1, u/split)) : 1; ez = split < 1 ? ease(Math.max(0, (u-split)/(1-split))) : 1; }
+    else { ez = split ? ease(Math.min(1, u/split)) : 1; er = split < 1 ? ease(Math.max(0, (u-split)/(1-split))) : 1; }
+    const c = ic(er);
+    proj.rotate(isGlobe() ? [-c[0], -c[1]] : [-c[0], 0]).scale(Math.exp(lk0 + (lk1-lk0)*ez))
+        .translate([from.t[0] + (v.t[0]-from.t[0])*ez, from.t[1] + (v.t[1]-from.t[1])*ez]);
+    if (u < 1){ render(true); anim.id = requestAnimationFrame(step); }
+    else { anim = null; base = { k:v.k, t:v.t.slice(), rot:v.rot.slice() }; applyZoom(); if (onDone) onDone(); }
+  };
+  anim = { id: requestAnimationFrame(step) };
+}
+function applyZoom(){
+  const c = [W/2, H/2];
+  proj.rotate(base.rot).scale(base.k*zoom).translate([c[0]+(base.t[0]-c[0])*zoom, c[1]+(base.t[1]-c[1])*zoom]);
+  draw();
+}
+// Lighter copy of the borders for smooth animation
+function simplifyGeom(g, tol){
+  const ring = r => { const out = [r[0]]; let l = r[0];
+    for (let i = 1; i < r.length - 1; i++){ const q = r[i]; if (Math.abs(q[0]-l[0]) + Math.abs(q[1]-l[1]) > tol){ out.push(q); l = q; } }
+    out.push(r[r.length-1]); return out.length >= 4 ? out : null; };
+  const poly = p => { const ext = ring(p[0]); if (!ext) return null; return [ext, ...p.slice(1).map(ring).filter(Boolean)]; };
+  if (g.type === "Polygon"){ const p = poly(g.coordinates); return p ? { type:"Polygon", coordinates:p } : null; }
+  if (g.type === "MultiPolygon"){ const ps = g.coordinates.map(poly).filter(Boolean); return ps.length ? { type:"MultiPolygon", coordinates:ps } : null; }
+  return g;
+}
+let raf = 0;
+function draw(){ if (anim) return; if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(interacting); }); }
+let mapShift = 0, hidTopPx = 0, panelPx = 0;
+// centre the globe in the part of the map not covered by the top edge or the answer panel
+function updShift(){ const sh = (hidTopPx - panelPx) / 2; if (Math.abs(sh - mapShift) > 1){ mapShift = sh; draw(); } }
+function render(lo){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+  ctx.translate(0, mapShift);   // keep the globe centred in the part of the map you can see
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = colors.space; ctx.fillRect(0,0,W,H);
+  if (!allFeatures.length) return;
+  const k = proj.scale();
+  // ocean globe
+  ctx.beginPath(); path({type:"Sphere"}); ctx.fillStyle = colors.water; ctx.fill();
+  // land
+  const G = f => (lo && f._lo) || f;
+  for (let c = 0; c < MAP_COLORS.length; c++){
+    ctx.beginPath(); for (const f of allFeatures) if (f._color === c && (!lo || f._lo)) path(G(f));
+    ctx.fillStyle = MAP_COLORS[c]; ctx.fill();
+  }
+  ctx.beginPath(); for (const f of allFeatures) if (!f._noFill && f._color == null && (!lo || f._lo)) path(G(f));
+  ctx.fillStyle = colors.landfill; ctx.fill();
+  ctx.beginPath(); for (const f of allFeatures) if (!lo || f._lo) path(G(f));
+  const bw = k > 2500 ? 1.1 : 0.7;
+  ctx.lineJoin = "round"; ctx.strokeStyle = colors.water; ctx.lineWidth = bw; ctx.stroke();
+  // wrong guess
+  if (guessRec && guessRec !== cur){
+    ctx.beginPath(); path(G(guessRec.f)); ctx.globalAlpha = .45; ctx.fillStyle = colors.bad; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = colors.bad; ctx.lineWidth = 1.2; ctx.stroke();
+  }
+  // target
+  if (cur){
+    ctx.beginPath(); path(G(cur.f)); ctx.fillStyle = colors.accent; ctx.fill();
+    ctx.strokeStyle = colors.water; ctx.lineWidth = bw*2; ctx.stroke();
+    // ring for small countries
+    const a = path.area(cur.f);
+    if (a < 220){
+      const p = proj(cur.center);
+      if (p){ ctx.beginPath(); ctx.arc(p[0], p[1], 16, 0, Math.PI*2); ctx.strokeStyle = colors.accent; ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.beginPath(); ctx.arc(p[0], p[1], 23, 0, Math.PI*2); ctx.globalAlpha = .35; ctx.lineWidth = 1.5; ctx.stroke(); ctx.globalAlpha = 1; }
+    }
+  }
+  // labels
+  if (!lo && (showNames || phase === "reveal" || guessRec || isComplete())) drawLabels();
+  updateCoord();
+}
+function visible(lonlat){
+  if (!isGlobe()) return true;
+  const r = proj.rotate(); return d3.geoDistance(lonlat, [-r[0], -r[1]]) < Math.PI/2 - 0.02;
+}
+function label(text, p, strong, color){
+  ctx.font = (strong ? "700 14px " : "600 11.5px ") + "'Catamaran', system-ui, sans-serif";
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.lineWidth = 3.5; ctx.strokeStyle = colors.landfill; ctx.lineJoin = "round";
+  ctx.strokeText(text, p[0], p[1]); ctx.fillStyle = color || colors.mapink; ctx.fillText(text, p[0], p[1]);
+}
+function drawLabels(){
+  const placed = [];
+  const fits = (p, w) => { const box = [p[0]-w/2-4, p[1]-9, p[0]+w/2+4, p[1]+9];
+    if (box[0] < 4 || box[2] > W-4 || box[1] < 4 || box[3] > H-4) return false;
+    for (const b of placed) if (!(box[2] < b[0] || box[0] > b[2] || box[3] < b[1] || box[1] > b[3])) return false;
+    placed.push(box); return true; };
+  const reveal = phase === "reveal";
+  const first = [];
+  if (reveal && cur) first.push([cur, true, colors.mapink]);
+  if (guessRec && guessRec !== cur) first.push([guessRec, true, colors.bad]);
+  for (const [r, strong, col] of first){
+    if (!visible(r.center)) continue; const p = proj(r.center); if (!p) continue;
+    ctx.font = "700 14px system-ui"; const w = ctx.measureText(r.name).width;
+    const q = path.area(r.f) < 220 ? [p[0], p[1]+34] : p;
+    fits(q, w); label(r.name, q, strong, col);
+  }
+  if (isComplete()){
+    const named = doneSet();
+    const list = countries.filter(r => named.has(r.id) && r !== guessRec && visible(r.center))
+      .map(r => [path.area(r.core), r]).sort((x,y) => y[0]-x[0]);
+    for (const [a, r] of list.slice(0, 120)){
+      const p = proj(r.center); if (!p) continue;
+      ctx.font = "700 12px system-ui"; const w = ctx.measureText(r.name).width;
+      if (a < 30 && !fits([p[0], p[1]], w)) continue;
+      if (a >= 30 && !fits(p, w)) continue;
+      label(r.name, p, false, colors.mapink);
+    }
+  }
+  const cands = [];
+  for (const r of countries){
+    if (r === cur || r === guessRec) continue;
+    if (!visible(r.center)) continue;
+    const a = path.area(r.core); if (a < 260) continue;
+    cands.push([a, r]);
+  }
+  cands.sort((x,y) => y[0]-x[0]);
+  if (!(showNames || reveal)) return;
+  for (const [, r] of cands.slice(0, 60)){
+    const p = proj(r.center); if (!p) continue;
+    ctx.font = "600 11.5px system-ui"; const w = ctx.measureText(r.name).width;
+    if (fits(p, w)) label(r.name, p, false, "#4c5d68");
+  }
+}
+function drawScale(k){
+  const kmPerPx = 6371 / k, target = 90 * kmPerPx;
+  const pow = Math.pow(10, Math.floor(Math.log10(target)));
+  const nice = [1,2,5,10].map(n => n*pow).reduce((a,b) => Math.abs(b-target) < Math.abs(a-target) ? b : a);
+  const px = nice / kmPerPx, x = 14, y = H - 16;
+  ctx.strokeStyle = colors.spaceink; ctx.lineWidth = 2; ctx.globalAlpha = .8;
+  ctx.beginPath(); ctx.moveTo(x, y-5); ctx.lineTo(x, y); ctx.lineTo(x+px, y); ctx.lineTo(x+px, y-5); ctx.stroke(); ctx.globalAlpha = 1;
+  ctx.font = "600 11px 'Catamaran', system-ui, sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+  ctx.fillStyle = colors.spaceink; ctx.fillText((nice >= 1000 ? nice.toLocaleString("en") : nice) + " km", x + px + 6, y + 2);
+}
+function updateCoord(){
+  const el = $("coord"), c = proj.invert && proj.invert([W/2, H/2]);
+  if (!c || !isFinite(c[0]) || !isFinite(c[1])) { el.textContent = ""; return; }
+  const lat = c[1], lon = ((c[0] + 540) % 360) - 180;
+  el.textContent = `${Math.abs(lat).toFixed(1)}° ${lat >= 0 ? "N" : "S"}  ${Math.abs(lon).toFixed(1)}° ${lon >= 0 ? "E" : "W"}`;
+}
+
+// drag to spin the globe
+let drag = null;
+// one finger spins, two fingers pinch-zoom
+const pts = new Map();
+let pinch = null, interacting = false;
+const clampZoom = z => { const m = Math.min(W, H); return Math.max((m/2.3)/base.k, Math.min((m/0.04)/base.k, z)); };
+const ptDist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x-b.x, a.y-b.y) || 1; };
+cv.addEventListener("pointerdown", e => {
+  if (!cur) return; cancelAnim();
+  pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+  try { cv.setPointerCapture(e.pointerId); } catch(_){}
+  interacting = true;
+  if (pts.size === 2){ drag = null; pinch = { d: ptDist(), z: zoom }; }
+  else if (pts.size === 1){ drag = { x:e.clientX, y:e.clientY, rot: base.rot.slice(), t: base.t.slice() }; cv.classList.add("drag"); }
+});
+cv.addEventListener("pointermove", e => {
+  if (!pts.has(e.pointerId)) return;
+  pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+  if (pinch && pts.size >= 2){ zoom = clampZoom(pinch.z * ptDist() / pinch.d); applyZoom(); return; }
+  if (!drag) return;
+  const k = proj.scale(), f = 180/Math.PI/k, dx = e.clientX-drag.x, dy = e.clientY-drag.y;
+  if (isGlobe()) base.rot = [drag.rot[0] + dx*f, Math.max(-89, Math.min(89, drag.rot[1] - dy*f))];
+  else { base.rot = [drag.rot[0] + dx*f, 0]; base.t = [drag.t[0], drag.t[1] + dy/zoom]; }
+  applyZoom();
+});
+const endPtr = e => {
+  pts.delete(e.pointerId);
+  if (pts.size < 2) pinch = null;
+  if (pts.size === 1){ const [p] = [...pts.values()]; drag = { x:p.x, y:p.y, rot: base.rot.slice(), t: base.t.slice() }; }
+  if (pts.size === 0){ drag = null; interacting = false; cv.classList.remove("drag"); draw(); }
+};
+cv.addEventListener("pointerup", endPtr); cv.addEventListener("pointercancel", endPtr);
+cv.addEventListener("wheel", e => { if (!cur) return; e.preventDefault(); cancelAnim(); zoom = clampZoom(zoom * (e.deltaY < 0 ? 1.15 : 1/1.15)); applyZoom(); }, { passive:false });
+$("zIn").onclick = () => { cancelAnim(); zoom = clampZoom(zoom*1.5); applyZoom(); };
+$("zOut").onclick = () => { cancelAnim(); zoom = clampZoom(zoom/1.5); applyZoom(); };
+$("zReset").onclick = () => { if (cur) animateTo(viewMode === "country" ? countryView(cur) : globeView(cur.center), 600); };
+
+// ---------- Complete-the-map run ----------
+const LS_RUN = "borderline.runs.v1";
+const isComplete = () => settings.game === "complete";
+const REGION_NAMES = { World:"Whole world", NorthAmerica:"North America", SouthAmerica:"South America" };
+const REGION_ORDER = ["Europe","Asia","Africa","NorthAmerica","SouthAmerica","Oceania"];
+const sortedRegions = () => REGION_ORDER.filter(r => settings.regions.includes(r));
+const regionName = () => {
+  if (isWorld()) return "Whole world";
+  const n = sortedRegions().map(r => REGION_NAMES[r] || r);
+  return n.length === 1 ? n[0] : n.slice(0, -1).join(", ") + " & " + n[n.length-1];
+};
+const runKey = () => (isWorld() ? "World" : sortedRegions().join("+")) + "|" + (settings.terr ? "t" : "");
+// one saved run per region, so switching regions keeps your place in each
+let runs = {}, run = null, advTimer = 0;
+try { runs = JSON.parse(localStorage.getItem(LS_RUN) || "{}") || {}; } catch(e){ runs = {}; }
+// runs saved while Central America was separate: "North+Central" is now plain North America
+for (const k of Object.keys(runs)){
+  if (!k.includes("CentralAmerica")) continue;
+  const [regs, t] = k.split("|");
+  const merged = [...new Set(regs.split("+").map(r => r === "CentralAmerica" ? "NorthAmerica" : r))];
+  const nk = REGION_ORDER.filter(r => merged.includes(r)).join("+") + "|" + (t || "");
+  if (regs.includes("NorthAmerica") && (!runs[nk] || (runs[nk].total || 0) < (runs[k].total || 0))) runs[nk] = { ...runs[k], key: nk };
+  delete runs[k];
+}
+const saveRun = () => { if (run) runs[run.key] = run; try { localStorage.setItem(LS_RUN, JSON.stringify(runs)); } catch(e){} };
+function newRun(){
+  const ids = d3.shuffle(pool().map(r => r.id));
+  run = { key: runKey(), queue: ids, done: [], missed: [], total: ids.length };
+  saveRun();
+}
+function ensureRun(){
+  run = runs[runKey()] || null;
+  if (!run || !Array.isArray(run.queue)) newRun();
+  run.queue = run.queue.filter(id => byId[id]);
+  run.done = run.done.filter(id => byId[id]);
+  // if the region gained countries since this run started, add them to the end
+  const have = new Set([...run.queue, ...run.done]), extra = d3.shuffle(pool().map(r => r.id).filter(id => !have.has(id)));
+  if (extra.length){ run.queue.push(...extra); run.total = run.queue.length + run.done.length; saveRun(); }
+  run.missed = run.missed || [];
+}
+const doneSet = () => { const r = runs[runKey()]; return new Set(r && r.done ? r.done : []); };
+
+// ---------- Game logic ----------
+function pool(){
+  return countries.filter(r => {
+    if (isWorld()) return r.sovereign || settings.terr;
+    return settings.regions.includes(r.cont) && (r.sovereign || settings.terr);
+  });
+}
+function weight(r){
+  const s = stats[r.id];
+  if (!s) return settings.mode === "misses" ? 0 : 3;
+  if (settings.mode === "new") return 0;
+  const tot = s.r + s.w, wr = tot ? (s.w + 0.5*(s.ha||0))/tot : 0;
+  const lastBoost = s.l === 0 ? 3 : s.l === 0.5 ? 1.5 : 0;
+  if (settings.mode === "misses") return (s.l === 0 || s.l === 0.5 || wr > 0.34) ? 1 + 3*wr + lastBoost*2/3 : 0;
+  if (s.s >= 3) return 0.25;
+  return 1 + 4*wr + lastBoost;
+}
+function pick(){
+  const p = pool();
+  let items = p.map(r => [r, recent.includes(r.id) ? 0 : weight(r)]).filter(x => x[1] > 0);
+  if (!items.length) items = p.map(r => [r, weight(r)]).filter(x => x[1] > 0);
+  if (!items.length) return null;
+  const sum = items.reduce((a,x) => a + x[1], 0); let t = Math.random()*sum;
+  for (const [r, w] of items){ t -= w; if (t <= 0) return r; }
+  return items[items.length-1][0];
+}
+function next(){
+  clearTimeout(advTimer);
+  if (isComplete()) return nextComplete();
+  $("btnList").hidden = true; $("btnSkip").textContent = "I don't know";
+  guessRec = null; tries = 0; missed = false;
+  resetHints();
+  const r = pick();
+  plateMsg = null; $("resultBox").hidden = true;
+  const input = $("guess"); input.value = ""; hideSugg();
+  if (!r){
+    cur = null; phase = "empty";
+    const msg = settings.mode === "misses" ? "No misses to practice here. Nice work." : "You have seen every country in this set.";
+    showResult("good", msg, "Open the menu and pick another mode or region.");
+    setControls(false); draw(); return;
+  }
+  cur = r; phase = "ask";
+  recent.push(r.id); if (recent.length > 6) recent.shift();
+  setControls(true);
+  $("btnSkip").hidden = false; $("guess").closest(".field").hidden = false; $("btnGo").classList.remove("wide", "won", "lost");
+  $("btnGo").textContent = "Guess";
+  viewMode = "country";
+  animateTo(countryView(r));
+  if (matchMedia("(pointer:fine)").matches) input.focus();
+}
+function nextComplete(){
+  ensureRun();
+  guessRec = null; tries = 0; missed = false;
+  hintFlag = false; hintLetters = 0; shownPrefix = ""; usedNames = showNames; closeHintMenu();
+  $("btnList").hidden = false; updateListChip();
+  $("btnSkip").textContent = "Skip";
+  plateMsg = null; $("resultBox").hidden = true;
+  const input = $("guess"); input.value = ""; hideSugg();
+  $("btnSkip").hidden = false; input.closest(".field").hidden = false;
+  $("btnGo").classList.remove("wide", "won", "lost"); $("btnGo").textContent = "Guess";
+  if (!run.queue.length){ finishRun(); return; }
+  const prev = cur, r = byId[run.queue[0]];
+  cur = r; phase = "ask";
+  setControls(true);
+  viewMode = "country";
+  // zoom out a little, turn, then zoom in on the next one
+  if (prev && prev !== r && proj.scale() > globeView(prev.center).k * 1.3) animateTo(globeView(prev.center), 600, () => { if (cur === r) animateTo(countryView(r)); });
+  else animateTo(countryView(r));
+  if (matchMedia("(pointer:fine)").matches) input.focus();
+  draw();
+}
+function finishRun(){
+  cur = null; phase = "finished"; guessRec = null;
+  const first = run.done.filter(id => !run.missed.includes(id)).length;
+  showResult("good", "Map complete!", `You named all ${run.total} countries. ${first} of them on the first try.`);
+  setControls(false);
+  $("btnSkip").hidden = true; $("guess").closest(".field").hidden = true;
+  $("btnGo").disabled = false; $("btnGo").textContent = "Play again"; $("btnGo").classList.add("wide", "won");
+  viewMode = "globe";
+  animateTo(globeView(currentCenter()));
+  updateListChip();
+}
+function advanceSoon(ms){
+  phase = "wait"; setControls(false); $("btnHint").disabled = false;
+  clearTimeout(advTimer); advTimer = setTimeout(() => { if (phase === "wait") next(); }, ms);
+}
+function completeSubmit(){
+  const text = $("guess").value.trim(); if (!text) { $("guess").focus(); return; }
+  hideSugg();
+  if (isCorrect(text, cur)){
+    const firstTime = !run.missed.includes(cur.id), help = hinted() ? hintText() : "";
+    if (hintLetters >= 2 && !run.missed.includes(cur.id)) run.missed.push(cur.id);   // counts as a miss
+    record(true);
+    run.queue.shift(); run.done.push(cur.id); saveRun();
+    guessRec = null;
+    showResult("good", cur.name, (firstTime ? "Correct" : "Correct this time") + (help ? ` with hints (${help}).` : ".") + (hintLetters >= 2 ? " Counts as a miss." : ""), cur.id);
+    updateListChip(); draw();
+    advanceSoon(900);
+    return;
+  }
+  const g = findRec(text);
+  $("guess").value = "";
+  if (!g){
+    showResult("bad", "I don't know that country", `Check the spelling of “${text}”.`);
+    $("guess").focus(); return;
+  }
+  record(false);
+  if (!run.missed.includes(cur.id)) run.missed.push(cur.id);
+  run.queue.push(run.queue.shift()); saveRun();
+  guessRec = g;
+  showResult("bad", "Not " + g.name, "Moving on. This one comes back later.");
+  updateListChip(); draw();
+  advanceSoon(1400);
+}
+function completeSkip(){
+  record(false);
+  if (!run.missed.includes(cur.id)) run.missed.push(cur.id);
+  run.queue.push(run.queue.shift()); saveRun();
+  showResult("bad", "Skipped", "This one comes back later.");
+  updateListChip();
+  advanceSoon(700);
+}
+function updateListChip(){
+  if (!run) return;
+  const left = run.queue.length;
+  const short = settings.regions.length > 1 ? "List" : regionName();
+  $("btnList").textContent = `${short} · ` + (left ? `${left} left` : "done");
+}
+function openList(){
+  ensureRun();
+  $("listTitle").textContent = regionName();
+  const done = new Set(run.done), missed = new Set(run.missed);
+  const all = [...run.done, ...run.queue].map(id => byId[id]).filter(Boolean).sort((a,b) => a.name.localeCompare(b.name));
+  $("listSum").innerHTML = `<b>${run.done.length}</b> of ${run.total} named · ${run.queue.length} to go`;
+  const ul = $("cList"); ul.innerHTML = "";
+  for (const r of all){
+    const li = document.createElement("li"); li.textContent = r.name;
+    if (done.has(r.id)) li.className = "done"; else if (missed.has(r.id)) li.className = "miss";
+    ul.appendChild(li);
+  }
+  runResetConfirm(false);
+  $("listSheet").hidden = false;
+}
+function runResetConfirm(on){
+  const box = $("runResetBox"); box.innerHTML = "";
+  if (!on){ const b = document.createElement("button"); b.className = "btn sm ghost"; b.textContent = "Start this map over"; b.onclick = () => runResetConfirm(true); box.appendChild(b); return; }
+  const t = document.createElement("span"); t.textContent = "Clear every country you've named on this map?";
+  const y = document.createElement("button"); y.className = "btn sm"; y.style.color = "var(--bad)"; y.textContent = "Yes, start over";
+  y.onclick = () => { newRun(); $("listSheet").hidden = true; cur = null; next(); };
+  const n = document.createElement("button"); n.className = "btn sm ghost"; n.textContent = "Cancel"; n.onclick = () => runResetConfirm(false);
+  box.append(t, y, n);
+}
+$("btnList").onclick = openList;
+$("btnListClose").onclick = () => { $("listSheet").hidden = true; };
+
+function setControls(on){
+  ["guess","btnGo","btnHint","btnSkip"].forEach(id => $(id).disabled = !on);
+  if (typeof renderHints === "function") renderHints();
+}
+function findRec(text){
+  const n = norm(text); if (!n) return null;
+  for (const r of countries) if (r.aliases.has(n)) return r;
+  let best = null, bd = 9;
+  for (const r of countries) for (const a of r.aliases){
+    if (a.length < 5) continue;
+    const d = lev(n, a), tol = a.length >= 9 ? 2 : 1;
+    if (d <= tol && d < bd){ bd = d; best = r; }
+  }
+  return best;
+}
+function isCorrect(text, r){
+  const n = norm(text); if (r.aliases.has(n)) return true;
+  for (const a of r.aliases){ if (a.length >= 5 && lev(n, a) <= (a.length >= 9 ? 2 : 1)) return true; }
+  return false;
+}
+function record(ok){
+  const old = stats[cur.id] || {};
+  const s = { r: old.r||0, w: old.w||0, s: old.s||0, l: old.l ?? null, t: 0,
+    ha: old.ha||0, hn: old.hn||0, hf: old.hf||0, hl: old.hl||0 };
+  if (Object.isFrozen(stats)) stats = { ...stats };
+  stats[cur.id] = s;
+  const h = hintsUsed(), help = hinted();
+  if (ok && h.letters >= 2) ok = false;                  // two or more letters revealed: counts as a miss
+  if (help){ if (h.names) s.hn++; if (h.flag) s.hf++; s.hl += h.letters; }
+  if (ok && help){ s.r++; s.ha++; s.l = 0.5; }          // right, but with help: no streak progress
+  else if (ok){ s.r++; s.s++; s.l = 1; }
+  else { s.w++; s.s = 0; s.l = 0; }
+  s.t = Date.now();
+  session.total++; if (ok){ session.right++; session.streak++; } else session.streak = 0;
+  persist(); updateTally();
+}
+let tries = 0, missed = false;
+function submit(){
+  if (phase === "finished"){ newRun(); cur = null; next(); return; }
+  if (phase === "reveal" || phase === "empty"){ next(); return; }
+  if (phase !== "ask") return;
+  if (isComplete()) return completeSubmit();
+  const text = $("guess").value.trim(); if (!text) { $("guess").focus(); return; }
+  hideSugg();
+  if (isCorrect(text, cur)){
+    tries++;
+    if (!missed) record(true);
+    phase = "reveal"; guessRec = null;
+    const s = stats[cur.id];
+    if (missed) showResult("good", cur.name, `Got it on try ${tries}. Still counts as a miss.`, cur.id);
+    else if (hintLetters >= 2) showResult("good", cur.name, `With hints (${hintText()}). Counts as a miss.`, cur.id);
+    else if (hinted()) showResult("good", cur.name, `With hints (${hintText()}). Counts as half known.`, cur.id);
+    else showResult("good", cur.name, s.s >= 3 ? `Correct. ${s.s} in a row: mastered.` : `Correct. Right ${s.r} of ${s.r+s.w} times.`, cur.id);
+    afterReveal(!missed && !hinted());
+    return;
+  }
+  const g = findRec(text);
+  $("guess").value = "";
+  if (!g){
+    showResult("bad", "I don't know that country", `Check the spelling of “${text}”.`);
+    $("guess").focus(); return;
+  }
+  tries++;
+  if (!missed){ missed = true; record(false); }
+  guessRec = g;
+  showResult("bad", "Not " + g.name, `${g.name} is shown in red. Try again.`);
+  animateTo(pairView(cur, g), 1200);
+  $("guess").focus({ preventScroll:true });
+}
+// Frame both the target and the wrong guess
+function pairView(a, b){
+  const save = [proj.rotate(), proj.scale(), proj.translate()];
+  const m = Math.min(W, H), c = d3.geoInterpolate(a.center, b.center)(0.5);
+  const both = { type:"FeatureCollection", features:[a.core, b.core] };
+  const pad = [[W*0.14, H*0.14],[W*0.86, H*0.86]];
+  let v;
+  if (isGlobe()){
+    proj.rotate([-c[0], -c[1]]); proj.fitExtent(pad, both);
+    let k = proj.scale(), t = proj.translate();
+    const kMin = m/2.15, kMax = m/0.13;
+    if (k < kMin || k > kMax){ k = Math.max(kMin, Math.min(kMax, k)); t = [W/2, H/2]; }
+    v = { k, t, rot: proj.rotate().slice() };
+  } else {
+    proj.rotate([-c[0], 0]); proj.fitExtent(pad, both);
+    v = { k: proj.scale(), t: proj.translate().slice(), rot: proj.rotate().slice() };
+  }
+  proj.rotate(save[0]).scale(save[1]).translate(save[2]);
+  return v;
+}
+function giveUp(){
+  if (phase !== "ask") return;
+  if (isComplete()) return completeSkip();
+  if (!missed){ missed = true; record(false); }
+  phase = "reveal"; guessRec = null;
+  showResult("bad", cur.name, "Marked as a miss. It will come back sooner.", cur.id);
+  afterReveal(false);
+}
+function afterReveal(won){
+  closeHintMenu(); setTimeout(renderHints);
+  $("btnSkip").hidden = true; $("guess").closest(".field").hidden = true; hideSugg();
+  $("btnGo").classList.add("wide", won ? "won" : "lost");
+  viewMode = "globe";
+  animateTo(globeView(cur.center));
+  $("btnGo").textContent = "Next";
+  $("btnSkip").disabled = true;
+  $("btnGo").focus({ preventScroll:true });
+  draw();
+}
+let plateMsg = null;
+function showResult(kind, title, sub, flagId){
+  plateMsg = { kind, title, sub: sub || "", flagId: flagId || "" };
+  renderPlate(true);
+}
+function renderPlate(animate){
+  const box = $("resultBox"), f = $("plateFlag");
+  let m = plateMsg;
+  if (!m && cur && phase === "ask" && (hintFlag || hintLetters > 0)){
+    const pre = hintLetters ? namePrefix(cur.name, hintLetters) : "";
+    m = { kind: "hint", title: pre ? pre + "…" : "Which country is this?", sub: "Hint: " + hintText(), flagId: hintFlag ? cur.id : "" };
+  }
+  if (!m){ box.hidden = true; return; }
+  const was = box.hidden;
+  box.className = "plate " + m.kind;
+  $("plateTitle").textContent = m.title;
+  $("plateSub").textContent = m.sub;
+  const fl = m.flagId ? flagEmoji(m.flagId) : "";
+  f.textContent = fl; f.hidden = !fl;
+  box.hidden = false;
+  if (animate || was){ box.style.animation = "none"; void box.offsetWidth; box.style.animation = ""; }
+}
+function updateTally(){
+  if (!$("menu").hidden) renderMenuStats();
+}
+
+// ---------- Suggestions ----------
+let suggIdx = -1, suggItems = [];
+function updateSugg(){
+  const n = norm($("guess").value);
+  const ul = $("sugg");
+  if (n.length < 2 || phase !== "ask"){ hideSugg(); return; }
+  const seen = new Set(), out = [], named = isComplete() ? doneSet() : new Set();
+  for (const r of countries){
+    if (!r.sovereign && !settings.terr) continue;
+    if (named.has(r.id)) continue;
+    const hit = [...r.aliases].some(a => a.startsWith(n) || a.includes(" " + n));
+    if (hit && !seen.has(r.id)){ seen.add(r.id); out.push(r); }
+    if (out.length >= 5) break;
+  }
+  suggItems = out; suggIdx = -1;
+  if (!out.length){ hideSugg(); return; }
+  ul.innerHTML = "";
+  out.forEach((r, i) => { const li = document.createElement("li"); li.textContent = r.name; li.setAttribute("role","option");
+    li.onmousedown = e => { e.preventDefault(); $("guess").value = r.name; submit(); }; ul.appendChild(li); });
+  ul.hidden = false;
+}
+function hideSugg(){ $("sugg").hidden = true; suggItems = []; suggIdx = -1; }
+function markSugg(){ [...$("sugg").children].forEach((li,i) => li.setAttribute("aria-selected", i === suggIdx)); }
+$("guess").addEventListener("input", updateSugg);
+$("guess").addEventListener("blur", () => setTimeout(hideSugg, 120));
+$("guess").addEventListener("keydown", e => {
+  if (e.key === "ArrowDown" && suggItems.length){ e.preventDefault(); suggIdx = (suggIdx+1) % suggItems.length; markSugg(); }
+  else if (e.key === "ArrowUp" && suggItems.length){ e.preventDefault(); suggIdx = (suggIdx-1+suggItems.length) % suggItems.length; markSugg(); }
+  else if (e.key === "Enter"){ e.preventDefault(); if (suggIdx >= 0) $("guess").value = suggItems[suggIdx].name; submit(); }
+  else if (e.key === "Escape") hideSugg();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && phase === "reveal" && document.activeElement !== $("guess") && document.activeElement.tagName !== "BUTTON"){ e.preventDefault(); next(); }
+});
+$("btnGo").onclick = submit;
+$("btnSkip").onclick = giveUp;
+// ---------- Hints ----------
+let hintFlag = false, hintLetters = 0, usedNames = false;
+// What was used for the current country, for the record
+const hintsUsed = () => ({ names: usedNames || showNames, flag: hintFlag, letters: hintLetters });
+const hinted = () => { const h = hintsUsed(); return h.names || h.flag || h.letters > 0; };
+function hintText(){
+  const h = hintsUsed(), parts = [];
+  if (h.names) parts.push("names");
+  if (h.flag) parts.push("flag");
+  if (h.letters) parts.push(h.letters === 1 ? "1 letter" : h.letters + " letters");
+  return parts.join(", ");
+}
+const flagEmoji = id => /^[A-Z]{2}$/.test(id) ? String.fromCodePoint(...[...id].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : "";
+const ordinal = n => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th","st","nd","rd"][n % 10] || "th");
+const letterCount = name => [...name].filter(ch => /\p{L}/u.test(ch)).length;
+// The first n letters of the name, keeping any spaces or hyphens in between
+function namePrefix(name, n){
+  let out = "", k = 0;
+  for (const ch of name){ if (k >= n) break; out += ch; if (/\p{L}/u.test(ch)) k++; }
+  return out;
+}
+let shownPrefix = "";
+function renderHints(){
+  renderPlate();
+  $("hNames").setAttribute("aria-checked", String(showNames));
+  const total = cur ? letterCount(cur.name) : 0;
+  $("hLetter").textContent = hintLetters >= total && total ? "All letters shown" : `Reveal ${ordinal(hintLetters + 1)} letter`;
+  $("hLetter").disabled = !cur || phase !== "ask" || hintLetters >= total;
+  $("hFlag").disabled = !cur || phase !== "ask" || hintFlag;
+  $("btnHint").classList.toggle("on", showNames || hintFlag || hintLetters > 0);
+}
+function resetHints(){ showNames = false; usedNames = false; hintFlag = false; hintLetters = 0; shownPrefix = ""; closeHintMenu(); renderHints(); }
+function closeHintMenu(){ $("hintMenu").hidden = true; $("btnHint").setAttribute("aria-expanded", "false"); }
+$("btnHint").onclick = e => {
+  e.stopPropagation();
+  const open = $("hintMenu").hidden;
+  renderHints();
+  $("hintMenu").hidden = !open; $("btnHint").setAttribute("aria-expanded", String(open));
+};
+$("hNames").onclick = () => { showNames = !showNames; if (showNames && cur && phase === "ask") usedNames = true; renderHints(); draw(); closeHintMenu(); };
+$("hFlag").onclick = () => { hintFlag = true; plateMsg = null; renderHints(); closeHintMenu(); };
+$("hLetter").onclick = () => { hintLetters++; plateMsg = null; renderHints(); closeHintMenu(); };
+document.addEventListener("click", e => { if (!$("hintMenu").hidden && !e.target.closest(".hintwrap")) closeHintMenu(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeHintMenu(); });
+
+// ---------- Settings ----------
+$("selMode").value = settings.mode; $("chkTerr").checked = settings.terr;
+document.querySelectorAll('input[name=proj]').forEach(r => { r.checked = r.value === settings.proj; });
+function regionCount(r){
+  if (!countries.length) return r === "World" ? null : (CONT[r] || "").split(" ").filter(Boolean).length;
+  if (r === "World") return countries.filter(c => c.sovereign || settings.terr).length;
+  return countries.filter(c => c.cont === r && (c.sovereign || settings.terr)).length;
+}
+function syncTerr(){
+  $("terrRow").hidden = false;
+  document.querySelectorAll("#regionChips .rchip").forEach(b => {
+    if (!b.dataset.label) b.dataset.label = b.textContent;
+    const n = regionCount(b.dataset.r);
+    b.innerHTML = "";
+    b.append(b.dataset.label);
+    if (n != null){ const c = document.createElement("span"); c.className = "rcount"; c.textContent = n; b.append(c); }
+  });
+  document.querySelectorAll("#regionChips .rchip").forEach(b => {
+    const r = b.dataset.r;
+    b.setAttribute("aria-pressed", String(r === "World" ? isWorld() : settings.regions.includes(r)));
+  });
+  $("regionLabel").textContent = regionName();
+}
+syncTerr();
+const saveSettings = () => { try { localStorage.setItem(LS_SET, JSON.stringify(settings)); } catch(e){} };
+let needNew = true, dataReady = false;
+document.querySelectorAll("#regionChips .rchip").forEach(b => b.onclick = () => {
+  const r = b.dataset.r;
+  if (r === "World") settings.regions = [];
+  else if (settings.regions.includes(r)) settings.regions = settings.regions.filter(x => x !== r);
+  else settings.regions = [...settings.regions, r];
+  if (settings.regions.length === REGION_ORDER.length) settings.regions = [];   // every continent = whole world
+  syncTerr(); saveSettings(); recent = []; needNew = true; renderMenuStats(); updateStart();
+});
+$("selMode").onchange = e => { settings.mode = e.target.value; saveSettings(); needNew = true; updateStart(); };
+$("chkTerr").onchange = e => { settings.terr = e.target.checked; syncTerr(); saveSettings(); needNew = true; renderMenuStats(); updateStart(); };
+document.querySelectorAll('input[name=proj]').forEach(r => r.onchange = () => { settings.proj = r.value; saveSettings(); makeProj(); if (cur) setView(viewMode === "country" ? countryView(cur) : globeView(cur.center)); else setView(globeView([15, 20])); });
+
+// ---------- Menu ----------
+function updateStart(){
+  if (!dataReady) return;
+  const b = $("btnStart"), all = $("btnAll");
+  b.disabled = false; all.disabled = false;
+  b.textContent = (!isComplete() && cur && !needNew && phase !== "empty") ? "Continue" : "Start";
+  const r = runs[runKey()];
+  const prog = (r && r.done && r.done.length && r.queue && r.queue.length) ? ` · ${r.done.length}/${r.total}` : "";
+  all.innerHTML = "";
+  const t = document.createElement("span"); t.textContent = "Name them all";
+  all.append(t);
+  if (prog){ const sub = document.createElement("small"); sub.textContent = prog.replace(" · ", ""); all.append(sub); }
+  $("regionLabel").textContent = regionName();
+}
+function renderMenuStats(){
+  if (!countries.length){ $("menuStats").innerHTML = ""; return; }
+  const p = pool(); const seen = p.filter(r => stats[r.id]);
+  const mastered = seen.filter(r => stats[r.id].s >= 3).length;
+  const acc = session.total ? session.right/session.total : 0;
+  const items = [
+    ["r1", seen.length/Math.max(1,p.length), String(seen.length), "of " + p.length, "seen"],
+    ["r2", mastered/Math.max(1,p.length), String(mastered), "of " + p.length, "mastered"],
+    ["r3", acc, session.total ? Math.round(acc*100) + "%" : "–", session.total ? `${session.right} of ${session.total}` : "no answers yet", "this session"]];
+  const C = 2*Math.PI*44;
+  $("menuStats").innerHTML = items.map(([cls, frac, big, small, cap]) => `
+    <div class="ring ${cls}"><div class="dial">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="44"/>
+      ${cls==="r2" && frac>0 ? `<circle class="edge" cx="50" cy="50" r="44" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C*(1-Math.min(1,frac))).toFixed(2)}"/>` : ""}
+      <circle class="arc" cx="50" cy="50" r="44" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C*(1-Math.min(1,frac))).toFixed(2)}" ${frac<=0?'style="stroke:none"':''}/></svg>
+      <div class="val">${big}<small>${small}</small></div></div>
+      <div class="cap">${cap}</div></div>`).join("");
+}
+function openMenu(){ if (phase === "wait"){ clearTimeout(advTimer); phase = "ask"; needNew = true; } hideSugg(); $("guess").blur(); renderMenuStats(); updateStart(); $("menu").hidden = false; }
+function closeMenu(){
+  $("menu").hidden = true;
+  if (needNew || !cur || phase === "empty" || phase === "finished"){ needNew = false; next(); }
+  else if (phase === "ask" && matchMedia("(pointer:fine)").matches) $("guess").focus();
+  resize();
+}
+function startGame(game){
+  if (settings.game !== game){ settings.game = game; saveSettings(); needNew = true; }
+  closeMenu();
+}
+$("btnStart").onclick = () => startGame("practice");
+$("btnAll").onclick = () => startGame("complete");
+$("btnSettings").onclick = () => { $("settings").hidden = false; };
+$("btnEditRegion").onclick = () => { $("settings").hidden = false; $("settings").scrollTop = 0; const c = document.querySelector("#regionChips .rchip"); if (c) c.focus({ preventScroll:true }); };
+$("btnSetDone").onclick = () => { $("settings").hidden = true; renderMenuStats(); updateStart(); };
+$("menuStats").onclick = () => { renderProgress(); $("sheet").hidden = false; };
+$("btnMenu").onclick = openMenu;
+
+// ---------- Progress sheet ----------
+function renderProgress(){
+  const p = pool(), ids = new Set(p.map(r => r.id));
+  const seen = p.filter(r => stats[r.id]);
+  let R = 0, Wn = 0; seen.forEach(r => { R += stats[r.id].r; Wn += stats[r.id].w; });
+  const mastered = seen.filter(r => stats[r.id].s >= 3);
+  const weak = seen.filter(r => { const s = stats[r.id]; return s.s < 3 && (s.l === 0 || s.w > s.r); })
+    .sort((a,b) => (stats[b.id].w - stats[b.id].r) - (stats[a.id].w - stats[a.id].r));
+  const weakSet = new Set(weak.map(r => r.id));
+  const mid = seen.filter(r => stats[r.id].s < 3 && !weakSet.has(r.id));
+  const rName = regionName();
+  $("sum").innerHTML = "";
+  [[`${seen.length}/${p.length}`, "seen · " + rName], [R+Wn ? Math.round(100*R/(R+Wn))+"%" : "–", "accuracy"],
+   [mastered.length, "mastered"], [weak.length, "need work"]].forEach(([b, s]) => {
+    const d = document.createElement("div"); const bb = document.createElement("b"); bb.textContent = b;
+    const ss = document.createElement("span"); ss.textContent = s; d.append(bb, ss); $("sum").appendChild(d); });
+  const fill = (ul, arr, emptyText) => {
+    ul.innerHTML = "";
+    if (!arr.length){ const li = document.createElement("p"); li.className = "empty"; li.textContent = emptyText; ul.replaceChildren(li); return; }
+    for (const r of arr){
+      const s = stats[r.id], li = document.createElement("li");
+      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = r.name;
+      const ct = document.createElement("span"); ct.className = "ct"; ct.innerHTML = `<span class="g">✓${s.r - (s.ha||0)}</span>` + (s.ha ? ` <span class="h">?${s.ha}</span>` : "") + ` <span class="r">✗${s.w}</span>`;
+      if (s.ha) ct.title = `Hints used: ${[s.hn ? "names ×" + s.hn : "", s.hf ? "flag ×" + s.hf : "", s.hl ? s.hl + " letters" : ""].filter(Boolean).join(", ")}`;
+      const bar = document.createElement("div"); bar.className = "bar"; const i = document.createElement("i"); i.style.width = (100*s.r/Math.max(1,s.r+s.w)) + "%"; bar.appendChild(i);
+      li.append(nm, ct, bar); ul.appendChild(li);
+    }
+  };
+  fill($("lWeak"), weak, "Nothing here yet. Misses show up in this list.");
+  fill($("lMid"), mid.sort((a,b)=>a.name.localeCompare(b.name)), "Countries you got right but haven't locked in yet appear here.");
+  fill($("lGood"), mastered.sort((a,b)=>a.name.localeCompare(b.name)), "Get a country right three times in a row to master it.");
+}
+$("btnProgress").onclick = () => { renderProgress(); $("sheet").hidden = false; };
+$("btnClose").onclick = () => { $("sheet").hidden = true; resetConfirm(false); };
+function resetConfirm(on){
+  const box = $("resetBox"); box.innerHTML = "";
+  if (!on){ const b = document.createElement("button"); b.className = "btn sm ghost"; b.textContent = "Reset all progress"; b.onclick = () => resetConfirm(true); box.appendChild(b); return; }
+  const t = document.createElement("span"); t.textContent = "Erase every answer you've given?";
+  const y = document.createElement("button"); y.className = "btn sm"; y.style.color = "var(--bad)"; y.textContent = "Yes, erase";
+  y.onclick = () => { stats = {}; persist(); if (docRef) flush(); renderProgress(); resetConfirm(false); };
+  const n = document.createElement("button"); n.className = "btn sm ghost"; n.textContent = "Cancel"; n.onclick = () => resetConfirm(false);
+  box.append(t, y, n);
+}
+$("btnReset").onclick = () => resetConfirm(true);
+
+// ---------- When the keyboard pushes the app up, follow what is still visible ----------
+(function(){
+  if (!("IntersectionObserver" in window)) return;
+  const mapEl = $("map"), root = document.documentElement;
+  const th = []; for (let i = 0; i <= 200; i++) th.push(i/200);
+  const io = new IntersectionObserver(entries => {
+    const e = entries[entries.length - 1];
+    const hidden = Math.max(0, Math.round(e.intersectionRect.top - e.boundingClientRect.top));
+    const h = hidden > 4 && hidden < e.boundingClientRect.height - 60 ? hidden : 0;
+    root.style.setProperty("--hidTop", h + "px");
+    hidTopPx = h; updShift();
+  }, { threshold: th });
+  io.observe(mapEl);
+})();
+
+// ---------- Keep the layout inside the visible area (on-screen keyboard) ----------
+(function(){
+  const vv = window.visualViewport, app = document.querySelector(".app"), root = document.documentElement;
+  if (!vv || !app) return;
+  const safeTop = () => parseFloat(getComputedStyle(root).paddingTop) || 0;
+  let base = 0;
+  function fit(){
+    const kb = window.innerHeight - vv.height > 120;   // keyboard is up
+    if (!kb){ app.classList.remove("vv"); root.style.removeProperty("--vvh"); root.style.removeProperty("--vvtop"); root.style.removeProperty("--vvpad"); return; }
+    app.classList.add("vv");
+    root.style.setProperty("--vvtop", vv.offsetTop + "px");
+    root.style.setProperty("--vvh", vv.height + "px");
+    root.style.setProperty("--vvpad", (vv.offsetTop > 0 ? 0 : safeTop()) + "px");
+  }
+  vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit);
+  $("guess").addEventListener("focus", () => { setTimeout(() => { window.scrollTo(0, 0); fit(); }, 60); setTimeout(fit, 350); });
+  $("guess").addEventListener("blur", () => setTimeout(fit, 150));
+})();
+
+// track the floating answer panel so map controls sit above it
+(function(){
+  const panel = document.querySelector(".panel"); if (!panel || !("ResizeObserver" in window)) return;
+  new ResizeObserver(() => {
+    const h = panel.hidden ? 0 : Math.round(panel.getBoundingClientRect().height + 10);
+    document.documentElement.style.setProperty("--panelH", h + "px");
+    panelPx = h; updShift();
+  }).observe(panel);
+})();
+
+// ---------- Boot ----------
+new ResizeObserver(resize).observe($("map"));
+connectDb();
+loadGeo().then(gj => {
+  prepare(gj);
+  $("loading").hidden = true; $("zoomBox").hidden = false; $("coord").hidden = false;
+  const src = (loadLog[loadLog.length-1] || "").replace(/: ok$/, ""), nf = allFeatures.filter(f => f._noFill).length;
+  $("mapSource").textContent = "Map data: " + src + (nf ? ` · ${nf} shape(s) shown as outline only` : "");
+  dataReady = true; syncTerr(); resize(); renderMenuStats(); updateStart();
+}).catch(() => {
+  const msg = "Couldn't load the map data. Send Claude a screenshot of this: " + loadLog.join(" · ");
+  $("loading").textContent = msg; $("btnStart").textContent = "Map unavailable";
+  $("menuNote").textContent = msg; $("menuNote").hidden = false;
+});
+})();
+</script>
+</body>
+</html>
