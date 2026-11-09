@@ -333,6 +333,17 @@ input[type=text]{min-height:44px;height:44px;padding:0 18px;font-size:17px}
 .hintmenu{border-radius:32px;padding:8px;background:rgba(10,20,26,.34)}
 .hintmenu button{min-height:44px;padding:0 18px}
 .plate{box-shadow:var(--glass-shadow)}
+:root{--map-water:#0a4566;--map-accent:#29e078;--map-bad:#ff8a80}
+/* Game screen: the map runs edge to edge, under the status bar and home indicator */
+body{background:var(--space)}
+.app{margin-top:calc(-1 * env(safe-area-inset-top,0px));margin-bottom:calc(-1 * env(safe-area-inset-bottom,0px));
+  height:calc(100% + env(safe-area-inset-top,0px) + env(safe-area-inset-bottom,0px))}
+.app.vv{margin:0;padding-top:0}
+.mapbar,#btnList,.plate{top:calc(10px + env(safe-area-inset-top,0px) + var(--hidTop,0px))}
+.panel{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.hintwrap,.zoom{bottom:calc(var(--panelH,0px) + 8px + env(safe-area-inset-bottom,0px))}
+.coord{bottom:calc(var(--panelH,0px) + 12px + env(safe-area-inset-bottom,0px))}
+.sugg{bottom:calc(var(--panelH,0px) + 6px + env(safe-area-inset-bottom,0px))}
 /* Name box: darker glass so the text reads over any country colour, and nothing is cut off */
 .plate{background:rgba(8,16,22,.72);border-color:rgba(255,255,255,.2);padding:9px 20px;align-items:center}
 .plate.good{background:rgba(18,150,78,.82);border-color:rgba(150,255,195,.45)}
@@ -773,6 +784,10 @@ let W = 0, H = 0, DPR = 1, colors = {};
 function readColors(){
   const cs = getComputedStyle(document.documentElement);
   ["space","landfill","mapline","mapink","spaceink","ocean","water","land","border","grat","ink","muted","accent","bad","good","bg","surface"].forEach(k => colors[k] = cs.getPropertyValue("--"+k).trim());
+  // the map looks the same in light and dark mode
+  colors.water = cs.getPropertyValue("--map-water").trim();
+  colors.accent = cs.getPropertyValue("--map-accent").trim();
+  colors.bad = cs.getPropertyValue("--map-bad").trim();
 }
 readColors();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); draw(); });
