@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="ew-build" content="20261110172930">
+<meta name="ew-build" content="20261110173508">
 <title>Earthy Wisdom</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2304091a'/%3E%3Cg transform='translate(14 14) scale(.72)'%3E%3Cpath d='M12.0 17.7 L15.2 16.3 L21.8 20.1 L27.8 20.5 L31.3 22.4 L31.7 26.1 L36.4 27.9 L41.5 30.3 L51.0 29.3 L51.4 27.5 L56.9 24.2 L64.4 23.3 L72.2 26.6 L76.6 30.7 L79.7 30.7 L79.3 35.4 L77.0 41.9 L78.5 45.1 L77.4 54.4 L81.7 54.9 L82.1 57.7 L78.5 62.3 L80.5 64.6 L84.8 69.3 L86.0 73.9 L88.0 76.2 L82.1 79.0 L81.3 83.7 L73.4 82.7 L64.4 80.4 L62.4 74.8 L59.6 74.4 L54.5 77.6 L49.4 75.8 L45.5 72.5 L41.1 71.1 L38.8 66.5 L36.0 60.4 L31.7 59.1 L30.1 61.8 L27.8 59.1 L27.8 56.7 L26.6 56.7 L26.6 52.1 L20.3 47.4 L17.5 43.3 L18.3 40.5 L15.9 38.2 L20.3 34.9 L17.5 33.5 L15.2 27.9 L12.8 24.7 L13.6 22.8Z' fill='%2329e078' stroke='%2329e078' stroke-width='15' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -338,9 +338,6 @@ input[type=text]{min-height:44px;height:44px;padding:0 18px;font-size:17px}
 /* Game screen: the map runs edge to edge, under the status bar and home indicator */
 body{background:var(--space)}
 .app{position:fixed;inset:0;height:auto;margin:0 auto}
-.app,.menu,.sheet{bottom:calc(-1 * var(--scrGap,0px))}
-.menu-in{padding-bottom:calc(28px + var(--scrGap,0px))}
-.sheet-in{padding-bottom:calc(40px + var(--scrGap,0px))}
 .mapbar,#btnList,.plate{top:calc(10px + env(safe-area-inset-top,0px) + var(--hidTop,0px) + var(--vvTop,0px))}
 /* Bottom panel sits the same distance from the bottom edge as from the sides, like the iOS dock */
 .panel{bottom:calc(8px + var(--kbBottom,0px))}
@@ -367,6 +364,11 @@ input[type=text]:focus,#btnGo:focus,#btnGo:focus-visible{
 .hintmenu button:focus-visible,.sugg li[aria-selected=true]{box-shadow:inset 0 0 0 1.5px var(--accent)}
 button.stats:focus-visible .ring .track{stroke:var(--accent);opacity:1}
 .textlink:focus-visible{text-decoration-thickness:2px}
+</style>
+<style>
+/* iPhone home-screen apps: height:100% plus the see-through status bar makes iOS report a short screen. Use the screen height instead. */
+html,body{height:100vh!important}
+:root{padding:0!important}
 </style>
 </head>
 <body>
@@ -983,11 +985,15 @@ let base = { k:1, t:[0,0], rot:[0,0] }, zoom = 1;
 let viewMode = "globe", anim = null;
 function resize(){
   const r = cv.getBoundingClientRect(); DPR = Math.min(window.devicePixelRatio || 1, 2);
-  W = Math.max(1, r.width); H = Math.max(1, r.height);
+  const nw = Math.max(1, r.width), nh = Math.max(1, r.height);
+  if (Math.abs(nw - W) < 1 && Math.abs(nh - H) < 1 && cv.width === Math.round(nw*DPR)) return;
+  W = nw; H = nh;
   cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
-  if (anim) return;
+  if (anim){ render(true); return; }
   if (cur) setView(viewMode === "country" ? countryView(cur) : globeView(cur.center), false);
   else setView(globeView(currentCenter()), false);
+  if (raf){ cancelAnimationFrame(raf); raf = 0; }
+  render();
 }
 const currentCenter = () => { const r = proj.rotate(); return [-r[0], -r[1]]; };
 // Framing for one country
@@ -1800,13 +1806,7 @@ $("btnReset").onclick = () => resetConfirm(true);
   const set = (k, v) => root.style.setProperty(k, Math.round(v) + "px");
   function fit(){
     // screen gap (home-screen app only, portrait or landscape)
-    let gap = 0;
-    if (navigator.standalone || matchMedia("(display-mode: standalone)").matches){
-      const sw = screen.width, sh = screen.height;
-      const full = Math.abs(window.innerWidth - sw) < 2 ? sh : Math.abs(window.innerWidth - sh) < 2 ? sw : 0;
-      if (full && full - window.innerHeight > 0 && full - window.innerHeight < 120) gap = full - window.innerHeight;
-    }
-    set("--scrGap", gap);
+    const gap = 0;
     let kb = 0, top = 0;
     if (vv){
       const covered = window.innerHeight - (vv.offsetTop + vv.height);
@@ -1853,7 +1853,7 @@ loadGeo().then(gj => {
 /* Self-update: GitHub Pages lets phones keep an old copy for up to 10 minutes.
    When the app opens or comes back to the front, check for a newer build and load it. */
 (function(){
-  var mine = "20261110172930";
+  var mine = "20261110173508";
   function check(){
     fetch(location.pathname + "?check=" + Date.now(), { cache: "no-store" }).then(function(r){ return r.text(); }).then(function(t){
       var m = t.match(/name="ew-build" content="(\d+)"/);
